@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Genesys · AI en cada experiencia</title>
+  <title>Genesys · AI Across Every Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       /* Genesys brand palette */
@@ -16,7 +19,6 @@
       --gray: #959699;
 
       --bg: #f5f7fa;
-      --panel: rgba(255,255,255,0.92);
       --text: var(--navy);
       --muted: #5E6573;
       --line: rgba(35, 57, 93, 0.10);
@@ -25,12 +27,13 @@
       --radius: 26px;
       --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --font: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     }
 
     * { box-sizing: border-box; }
     html, body {
       margin: 0; padding: 0; min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: var(--font);
       color: var(--text);
       background:
         radial-gradient(circle at 10% 0%, rgba(255,79,31,0.10), transparent 24%),
@@ -43,12 +46,7 @@
 
     .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
     .brand { display: flex; align-items: center; gap: 14px; }
-    .brand-mark {
-      width: 44px; height: 44px; border-radius: 14px;
-      background: linear-gradient(135deg, var(--orange), var(--yellow));
-      box-shadow: 0 12px 24px rgba(255,79,31,0.26);
-      position: relative; overflow: hidden;
-    }
+    .brand-mark { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--orange), var(--yellow)); box-shadow: 0 12px 24px rgba(255,79,31,0.26); position: relative; overflow: hidden; }
     .brand-mark::before { content:""; position:absolute; inset:0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.40), transparent 36%); }
     .brand-text .top { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
     .brand-text .bottom { margin-top: 4px; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
@@ -74,298 +72,258 @@
     .scene.active { opacity:1; visibility:visible; }
 
     .scene-label {
-      position:absolute; top:28px; left:32px; z-index: 3;
-      display:inline-flex; align-items:center; gap:10px;
-      padding:9px 12px; border-radius:999px;
+      position:absolute; top:28px; left:32px; z-index:3;
+      display:inline-flex; align-items:center; gap:10px; padding:9px 12px; border-radius:999px;
       background: rgba(255,255,255,0.9); border:1px solid var(--line); color: var(--muted);
-      font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
-      box-shadow: 0 10px 20px rgba(35,57,93,0.05);
+      font-size:11px; letter-spacing:0.16em; text-transform:uppercase; box-shadow: 0 10px 20px rgba(35,57,93,0.05);
     }
-    .scene-label .num {
-      width:22px; height:22px; border-radius:7px;
-      background: linear-gradient(135deg, var(--orange), var(--yellow)); color:#fff;
-      display:inline-flex; align-items:center; justify-content:center; font-size:11px; flex:0 0 auto;
-    }
+    .scene-label .num { width:22px; height:22px; border-radius:7px; background: linear-gradient(135deg, var(--orange), var(--yellow)); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex:0 0 auto; }
 
     .scene-title {
-      position:absolute; left:32px; right:32px; bottom:30px; z-index: 3;
-      font-size:24px; font-weight:700; letter-spacing:-0.03em; line-height:1.18;
-      opacity:0; transform:translateY(12px);
-      transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
-      max-width:78%;
+      position:absolute; left:32px; right:32px; bottom:30px; z-index:3;
+      font-size:23px; font-weight:700; letter-spacing:-0.03em; line-height:1.18;
+      opacity:0; transform:translateY(12px); transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); max-width:80%;
     }
     .scene.active .scene-title { opacity:1; transform:translateY(0); transition-delay:300ms; }
 
-    .label {
-      display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border-radius:999px;
-      background: rgba(255,79,31,0.10); color: var(--orange); font-size:12px; font-weight:700; border:1px solid rgba(255,79,31,0.20);
-    }
+    .label { display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border-radius:999px; background: rgba(255,79,31,0.10); color: var(--orange); font-size:12px; font-weight:700; border:1px solid rgba(255,79,31,0.20); }
     .label.teal { background: rgba(0,174,158,0.10); color: var(--teal); border-color: rgba(0,174,158,0.22); }
     .muted { color: var(--muted); }
 
-    .icon-chip {
-      width:34px; height:34px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
-      background: rgba(255,79,31,0.10); border:1px solid rgba(255,79,31,0.16); color: var(--orange); flex:0 0 auto;
-    }
-    .icon-chip.teal { background: rgba(0,174,158,0.10); border-color: rgba(0,174,158,0.18); color: var(--teal); }
-    .icon-chip svg { width:18px; height:18px; fill: currentColor; }
+    @keyframes corePulse { 0%,100%{ box-shadow: 0 18px 36px rgba(255,79,31,0.10) } 50%{ box-shadow: 0 22px 50px rgba(255,79,31,0.20) } }
 
-    /* ============ SCENE 1 — El inicio ============ */
-    .s1-stage { position:absolute; inset:80px 56px 96px; display:grid; place-items:center; }
-
-    .phone {
-      width: 248px; height: 392px; border-radius: 36px;
-      background: linear-gradient(180deg, #ffffff, #f3f6fb);
-      border: 1px solid var(--line);
-      box-shadow: 0 30px 60px rgba(35,57,93,0.16), inset 0 0 0 6px rgba(255,255,255,0.7);
-      padding: 16px 14px; position: relative; overflow: hidden;
-      opacity:0; transform: translateY(16px) scale(0.96);
-      transition: opacity 560ms var(--ease-out), transform 560ms var(--ease-out);
-    }
-    .scene.active .phone { opacity:1; transform: translateY(0) scale(1); transition-delay:120ms; }
-    .phone .notch { width:96px; height:7px; border-radius:99px; background: rgba(35,57,93,0.18); margin:2px auto 16px; }
-    .phone .clock { text-align:center; font-size:40px; font-weight:700; letter-spacing:-0.04em; color: var(--navy); opacity:0.92; }
-    .phone .date { text-align:center; font-size:12px; color: var(--muted); margin-top:2px; margin-bottom:20px; }
-
-    .notif {
-      background: rgba(255,255,255,0.96); border:1px solid var(--line); border-radius:18px;
-      padding:12px 13px; display:flex; gap:11px; align-items:flex-start;
-      box-shadow: 0 14px 30px rgba(35,57,93,0.12);
-      opacity:0; transform: translateY(-20px);
-      transition: opacity 500ms var(--ease-out), transform 600ms var(--ease-out);
-    }
-    .scene.active .notif { opacity:1; transform: translateY(0); transition-delay:900ms; }
-    .notif .ic { width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg, var(--orange), var(--yellow)); display:grid; place-items:center; font-size:17px; flex:0 0 auto; }
-    .notif .body { min-width:0; }
-    .notif .ttl { font-size:11px; font-weight:700; color: var(--navy); letter-spacing:0.02em; }
-    .notif .msg { font-size:13px; font-weight:600; color: var(--navy); margin-top:2px; line-height:1.3; }
-    .notif .time { font-size:10px; color: var(--gray); margin-top:4px; }
-
-    .wa-hint {
-      margin-top: 18px; display:flex; align-items:center; gap:9px; justify-content:center;
-      padding:9px 13px; border-radius:14px; background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.22);
-      font-size:12px; color: var(--navy); font-weight:600;
-      opacity:0; transform: translateY(10px);
-      transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
-    }
-    .scene.active .wa-hint { opacity:1; transform:translateY(0); transition-delay:1700ms; }
-    .wa-hint .wa { width:22px; height:22px; border-radius:50%; background: var(--teal); display:grid; place-items:center; }
-    .wa-hint .wa svg { width:13px; height:13px; fill:#fff; }
-
-    /* ============ SCENE 2 — Automation (chat) ============ */
-    .s2-stage { position:absolute; inset:78px 56px 96px; display:flex; align-items:center; justify-content:center; gap:34px; }
-
-    .chat {
-      width: 360px; border-radius:24px; background: rgba(255,255,255,0.96); border:1px solid var(--line);
-      box-shadow: 0 20px 44px rgba(35,57,93,0.10); overflow:hidden;
-      opacity:0; transform: translateY(12px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
-    }
-    .scene.active .chat { opacity:1; transform:translateY(0); transition-delay:160ms; }
+    /* shared chat styles */
+    .chat { width: 356px; border-radius:24px; background: rgba(255,255,255,0.96); border:1px solid var(--line); box-shadow: 0 20px 44px rgba(35,57,93,0.10); overflow:hidden; opacity:0; transform: translateY(12px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
     .chat-head { display:flex; align-items:center; gap:10px; padding:12px 14px; background: rgba(0,174,158,0.08); border-bottom:1px solid var(--line); }
     .chat-head .ava { width:30px; height:30px; border-radius:50%; background: var(--teal); display:grid; place-items:center; }
     .chat-head .ava svg { width:16px; height:16px; fill:#fff; }
     .chat-head .who { font-size:13px; font-weight:700; color: var(--navy); }
     .chat-head .sub { font-size:10px; color: var(--muted); }
-    .chat-body { padding:14px; display:flex; flex-direction:column; gap:9px; min-height: 232px; }
-
-    .bubble { max-width:80%; padding:10px 13px; border-radius:16px; font-size:13px; line-height:1.42; opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+    .chat-body { padding:14px; display:flex; flex-direction:column; gap:9px; min-height: 228px; }
+    .bubble { max-width:82%; padding:10px 13px; border-radius:16px; font-size:13px; line-height:1.42; opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
     .bubble.out { align-self:flex-end; background: linear-gradient(135deg, rgba(0,174,158,0.18), rgba(0,174,158,0.10)); border:1px solid rgba(0,174,158,0.25); border-bottom-right-radius:6px; color: var(--navy); }
     .bubble.in { align-self:flex-start; background:#fff; border:1px solid var(--line); border-bottom-left-radius:6px; box-shadow: 0 6px 16px rgba(35,57,93,0.06); }
-    .bubble.in .vatag { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color: var(--orange); margin-bottom:6px; }
+    .bubble.in .vatag { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color: var(--orange); margin-bottom:6px; }
     .bubble.in .vatag .b { width:6px; height:6px; border-radius:50%; background: var(--orange); }
-
-    .scene.active .bubble.out { opacity:1; transform:translateY(0); transition-delay:700ms; }
-    .scene.active .bubble.in  { opacity:1; transform:translateY(0); transition-delay:3300ms; }
-
-    .typing {
-      align-self:flex-start; display:inline-flex; gap:5px; align-items:center;
-      padding:11px 14px; border-radius:16px; border-bottom-left-radius:6px;
-      background:#fff; border:1px solid var(--line); overflow:hidden; opacity:0;
-    }
-    .scene.active .typing { animation: typingLife 2000ms var(--ease-out) 1500ms forwards; }
-    @keyframes typingLife {
-      0%   { opacity:0; transform:translateY(6px); max-height:42px; margin-bottom:0; padding-top:11px; padding-bottom:11px; }
-      14%  { opacity:1; transform:none; }
-      80%  { opacity:1; max-height:42px; }
-      100% { opacity:0; transform:translateY(-4px); max-height:0; margin-bottom:-9px; padding-top:0; padding-bottom:0; border-width:0; }
-    }
+    .typing { align-self:flex-start; display:inline-flex; gap:5px; align-items:center; padding:11px 14px; border-radius:16px; border-bottom-left-radius:6px; background:#fff; border:1px solid var(--line); overflow:hidden; opacity:0; }
+    @keyframes typingLife { 0%{opacity:0; transform:translateY(6px); max-height:42px; margin-bottom:0; padding-top:11px; padding-bottom:11px;} 14%{opacity:1; transform:none;} 80%{opacity:1; max-height:42px;} 100%{opacity:0; transform:translateY(-4px); max-height:0; margin-bottom:-9px; padding-top:0; padding-bottom:0; border-width:0;} }
     .typing i { width:7px; height:7px; border-radius:50%; background: var(--gray); animation: bounce 1s infinite ease-in-out; }
     .typing i:nth-child(2){ animation-delay:.15s } .typing i:nth-child(3){ animation-delay:.3s }
     @keyframes bounce { 0%,80%,100%{ transform:translateY(0); opacity:.45 } 40%{ transform:translateY(-5px); opacity:1 } }
-
     .options { display:flex; gap:7px; flex-wrap:wrap; margin-top:4px; }
-    .opt {
-      padding:8px 12px; border-radius:12px; font-size:12px; font-weight:600; color: var(--navy);
-      background: rgba(255,79,31,0.07); border:1px solid rgba(255,79,31,0.20);
-      opacity:0; transform: translateY(8px) scale(0.96);
-      transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out);
-    }
-    .scene.active .opt:nth-child(1){ opacity:1; transform:none; transition-delay:4200ms; }
-    .scene.active .opt:nth-child(2){ opacity:1; transform:none; transition-delay:4380ms; }
-    .scene.active .opt:nth-child(3){ opacity:1; transform:none; transition-delay:4560ms; }
+    .opt { padding:8px 12px; border-radius:12px; font-size:12px; font-weight:500; color: var(--navy); background: rgba(255,79,31,0.07); border:1px solid rgba(255,79,31,0.20); opacity:0; transform: translateY(8px) scale(0.96); transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out); }
 
-    .s2-flow { width: 210px; display:grid; gap:10px; justify-items:center; }
-    .flow-node {
-      width:100%; text-align:center; padding:12px 14px; border-radius:16px;
-      background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 12px 26px rgba(35,57,93,0.06);
-      font-size:13px; font-weight:700; color: var(--navy);
-      opacity:0; transform: translateX(16px);
-      transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out);
-    }
-    .flow-node .sub { display:block; font-size:11px; font-weight:500; color: var(--muted); margin-top:2px; }
+    /* shared flow-node */
+    .flow-node { width:100%; text-align:center; padding:11px 14px; border-radius:15px; background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 12px 26px rgba(35,57,93,0.06); font-size:13px; font-weight:700; color: var(--navy); opacity:0; transform: translateX(16px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .flow-node .sub { display:block; font-size:11px; font-weight:400; color: var(--muted); margin-top:2px; }
     .flow-node.core { background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(255,143,20,0.06)); border-color: rgba(255,79,31,0.22); }
-    .flow-arrow { color: var(--gray); font-size:14px; line-height:1; opacity:0; transition: opacity 360ms var(--ease-out); }
+    .flow-arrow { color: var(--gray); font-size:13px; line-height:1; opacity:0; transition: opacity 360ms var(--ease-out); }
+
+    /* ============ SCENE 1 — El inicio ============ */
+    .s1-stage { position:absolute; inset:78px 56px 96px; display:flex; align-items:center; justify-content:center; gap:44px; }
+    .phone {
+      width: 238px; height: 384px; border-radius: 36px;
+      background: linear-gradient(180deg, #ffffff, #f3f6fb); border: 1px solid var(--line);
+      box-shadow: 0 30px 60px rgba(35,57,93,0.16), inset 0 0 0 6px rgba(255,255,255,0.7);
+      padding: 16px 14px; position: relative; overflow: hidden;
+      opacity:0; transform: translateY(16px) scale(0.96); transition: opacity 560ms var(--ease-out), transform 560ms var(--ease-out);
+    }
+    .scene.active .phone { opacity:1; transform: none; transition-delay:120ms; }
+    .phone .notch { width:92px; height:7px; border-radius:99px; background: rgba(35,57,93,0.18); margin:2px auto 14px; }
+    .phone .clock { text-align:center; font-size:34px; font-weight:700; letter-spacing:-0.04em; color: var(--navy); }
+    .phone .date { text-align:center; font-size:12px; color: var(--muted); margin-top:2px; margin-bottom:18px; }
+    .notif { background: rgba(255,255,255,0.96); border:1px solid var(--line); border-radius:18px; padding:12px 13px; display:flex; gap:11px; align-items:flex-start; box-shadow: 0 14px 30px rgba(35,57,93,0.12); opacity:0; transform: translateY(-20px); transition: opacity 500ms var(--ease-out), transform 600ms var(--ease-out); }
+    .scene.active .notif { opacity:1; transform: none; transition-delay:900ms; }
+    .notif .ic { width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg, var(--orange), var(--yellow)); display:grid; place-items:center; font-size:17px; flex:0 0 auto; }
+    .notif .ttl { font-size:11px; font-weight:700; color: var(--navy); }
+    .notif .msg { font-size:13px; font-weight:500; color: var(--navy); margin-top:2px; line-height:1.3; }
+    .notif .time { font-size:10px; color: var(--gray); margin-top:4px; }
+    .pchat { margin-top:14px; display:flex; flex-direction:column; }
+    .pbubble { align-self:flex-end; max-width:88%; padding:9px 12px; border-radius:14px; border-bottom-right-radius:5px; background: linear-gradient(135deg, rgba(0,174,158,0.18), rgba(0,174,158,0.10)); border:1px solid rgba(0,174,158,0.25); font-size:12.5px; color: var(--navy); opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+    .scene.active .pbubble { opacity:1; transform:none; transition-delay:1800ms; }
+
+    .s1-right { width: 250px; display:grid; gap:11px; justify-items:center; }
+    .s1-channels { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; }
+    .cc { padding:10px 12px; border-radius:12px; background: rgba(255,255,255,0.95); border:1px solid var(--line); font-size:12px; font-weight:500; color: var(--navy); display:flex; gap:8px; align-items:center; box-shadow: 0 8px 18px rgba(35,57,93,0.05); opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+    .cc .d { width:8px; height:8px; border-radius:50%; background: var(--teal); }
+    .scene.active .s1-channels .cc:nth-child(1){ opacity:1; transform:none; transition-delay:2300ms; }
+    .scene.active .s1-channels .cc:nth-child(2){ opacity:1; transform:none; transition-delay:2440ms; }
+    .scene.active .s1-channels .cc:nth-child(3){ opacity:1; transform:none; transition-delay:2580ms; }
+    .scene.active .s1-channels .cc:nth-child(4){ opacity:1; transform:none; transition-delay:2720ms; }
+    .s1-arrow { color: var(--gray); font-size:18px; opacity:0; transition: opacity 360ms var(--ease-out); }
+    .scene.active .s1-arrow { opacity:1; transition-delay:2950ms; }
+    .s1-cloud { width:100%; text-align:center; padding:16px; border-radius:18px; background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(255,143,20,0.06)); border:1px solid rgba(255,79,31,0.22); box-shadow: 0 16px 32px rgba(255,79,31,0.10); opacity:0; transform: scale(0.92); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .scene.active .s1-cloud { opacity:1; transform:none; transition-delay:3150ms; animation: corePulse 3s ease-in-out infinite 2s; }
+    .s1-cloud h4 { margin:0; font-size:17px; letter-spacing:-0.01em; }
+    .s1-cloud p { margin:4px 0 0; font-size:11px; color: var(--muted); }
+
+    /* ============ SCENE 2 — Automation ============ */
+    .s2-stage { position:absolute; inset:78px 56px 96px; display:flex; align-items:center; justify-content:center; gap:34px; }
+    .scene.active .s2-stage .chat { opacity:1; transform:none; transition-delay:160ms; }
+    .scene.active .s2-stage .chat-body > *:nth-child(1){ opacity:1; transform:none; transition-delay:700ms; }
+    .scene.active .s2-stage .typing { animation: typingLife 2000ms var(--ease-out) 1500ms forwards; }
+    .scene.active .s2-stage .chat-body > *:nth-child(3){ opacity:1; transform:none; transition-delay:3300ms; }
+    .scene.active .s2-stage .opt:nth-child(1){ opacity:1; transform:none; transition-delay:4200ms; }
+    .scene.active .s2-stage .opt:nth-child(2){ opacity:1; transform:none; transition-delay:4380ms; }
+    .scene.active .s2-stage .opt:nth-child(3){ opacity:1; transform:none; transition-delay:4560ms; }
+
+    .s2-flow { width: 216px; display:grid; gap:9px; justify-items:center; }
+    .resolved { margin-top:4px; display:inline-flex; align-items:center; gap:8px; padding:9px 13px; border-radius:999px; background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.28); color: var(--teal); font-size:11.5px; font-weight:700; text-align:center; opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .resolved .tick { width:18px; height:18px; border-radius:50%; background: var(--teal); color:#fff; display:grid; place-items:center; font-size:11px; flex:0 0 auto; }
     .scene.active .s2-flow > *:nth-child(1){ opacity:1; transform:none; transition-delay:4900ms; }
-    .scene.active .s2-flow > *:nth-child(2){ opacity:1; transition-delay:5100ms; }
-    .scene.active .s2-flow > *:nth-child(3){ opacity:1; transform:none; transition-delay:5300ms; }
-    .scene.active .s2-flow > *:nth-child(4){ opacity:1; transition-delay:5500ms; }
-    .scene.active .s2-flow > *:nth-child(5){ opacity:1; transform:none; transition-delay:5700ms; }
+    .scene.active .s2-flow > *:nth-child(2){ opacity:1; transition-delay:5050ms; }
+    .scene.active .s2-flow > *:nth-child(3){ opacity:1; transform:none; transition-delay:5200ms; }
+    .scene.active .s2-flow > *:nth-child(4){ opacity:1; transition-delay:5350ms; }
+    .scene.active .s2-flow > *:nth-child(5){ opacity:1; transform:none; transition-delay:5500ms; }
+    .scene.active .s2-flow > *:nth-child(6){ opacity:1; transition-delay:5650ms; }
+    .scene.active .s2-flow > *:nth-child(7){ opacity:1; transform:none; transition-delay:5800ms; }
+    .scene.active .s2-flow > *:nth-child(8){ opacity:1; transform:none; transition-delay:6100ms; }
 
-    .resolved {
-      margin-top:4px; display:inline-flex; align-items:center; gap:8px; padding:9px 13px; border-radius:999px;
-      background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.28); color: var(--teal); font-size:12px; font-weight:700;
-      opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out);
-    }
-    .scene.active .resolved { opacity:1; transform:none; transition-delay:6200ms; }
-    .resolved .tick { width:18px; height:18px; border-radius:50%; background: var(--teal); color:#fff; display:grid; place-items:center; font-size:11px; }
+    /* ============ SCENE 3 — Escalación ============ */
+    .s3-stage { position:absolute; inset:78px 56px 96px; display:flex; align-items:center; justify-content:center; gap:34px; }
+    .scene.active .s3-stage .chat { opacity:1; transform:none; transition-delay:160ms; }
+    .scene.active .s3-stage .chat-body > *:nth-child(1){ opacity:1; transform:none; transition-delay:600ms; }
+    .scene.active .s3-stage .chat-body > *:nth-child(2){ opacity:1; transform:none; transition-delay:1100ms; }
+    .scene.active .s3-stage .typing { animation: typingLife 1800ms var(--ease-out) 1700ms forwards; }
+    .scene.active .s3-stage .chat-body > *:nth-child(4){ opacity:1; transform:none; transition-delay:3600ms; }
 
-    /* ============ SCENE 3 — Personalization ============ */
-    .s3-stage { position:absolute; inset:80px 56px 96px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
-    .engine {
-      width:230px; padding:18px; border-radius:22px; background: rgba(255,255,255,0.95); border:1px solid var(--line);
-      box-shadow: 0 14px 30px rgba(35,57,93,0.06);
-      opacity:0; transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
-    }
+    .esc-side { width: 230px; display:grid; gap:11px; justify-items:center; }
+    .esc-status { width:100%; padding:14px 15px; border-radius:16px; background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 12px 26px rgba(35,57,93,0.06); display:flex; align-items:center; gap:11px; opacity:0; transform: translateY(10px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .scene.active .esc-status { opacity:1; transform:none; transition-delay:2000ms; }
+    .esc-status .dots { display:inline-flex; gap:4px; }
+    .esc-status .dots i { width:7px; height:7px; border-radius:50%; background: var(--orange); animation: bounce 1s infinite ease-in-out; }
+    .esc-status .dots i:nth-child(2){ animation-delay:.15s } .esc-status .dots i:nth-child(3){ animation-delay:.3s }
+    .esc-status .txt { font-size:12.5px; font-weight:700; color: var(--navy); }
+    .esc-route { width:100%; text-align:center; padding:11px 14px; border-radius:14px; background: rgba(0,174,158,0.08); border:1px solid rgba(0,174,158,0.22); font-size:12px; font-weight:700; color: var(--teal); opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+    .esc-route span { display:block; font-size:11px; font-weight:400; color: var(--muted); margin-top:2px; }
+    .scene.active .esc-route { opacity:1; transform:none; transition-delay:2400ms; }
+    .esc-arrow { color: var(--gray); font-size:18px; opacity:0; transition: opacity 360ms var(--ease-out); }
+    .scene.active .esc-arrow { opacity:1; transition-delay:2800ms; }
+    .esc-agent { width:100%; text-align:center; padding:14px; border-radius:16px; background: linear-gradient(180deg, rgba(0,174,158,0.12), rgba(59,144,170,0.06)); border:1px solid rgba(0,174,158,0.22); box-shadow: 0 14px 30px rgba(0,174,158,0.10); opacity:0; transform: scale(0.92); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .scene.active .esc-agent { opacity:1; transform:none; transition-delay:3000ms; }
+    .esc-agent h4 { margin:0; font-size:16px; }
+    .esc-agent p { margin:4px 0 0; font-size:11px; color: var(--muted); }
+
+    /* ============ SCENE 4 — Personalization ============ */
+    .s4-stage { position:absolute; inset:80px 56px 96px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .engine { width:230px; padding:18px; border-radius:22px; background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 14px 30px rgba(35,57,93,0.06); opacity:0; transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
     .engine.left { transform: translateX(-18px); }
     .engine.right { transform: translateX(18px); }
     .scene.active .engine.left { opacity:1; transform:none; transition-delay:260ms; }
     .scene.active .engine.right { opacity:1; transform:none; transition-delay:520ms; }
-    .engine .t { font-size:12px; font-weight:800; color: var(--orange); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
+    .engine .t { font-size:12px; font-weight:700; color: var(--orange); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
     .engine.right .t { color: var(--teal); }
     .engine h4 { margin:0 0 6px; font-size:15px; letter-spacing:-0.01em; }
     .engine p { margin:0; font-size:12px; color: var(--muted); line-height:1.5; }
-
-    .ctx {
-      width:250px; padding:20px; border-radius:24px; text-align:center;
-      background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(0,174,158,0.08));
-      border:1px solid rgba(255,79,31,0.20); box-shadow: 0 18px 36px rgba(255,79,31,0.10);
-      opacity:0; transform: scale(0.9);
-      transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
-    }
+    .ctx { width:256px; padding:20px; border-radius:24px; text-align:center; background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(0,174,158,0.08)); border:1px solid rgba(255,79,31,0.20); box-shadow: 0 18px 36px rgba(255,79,31,0.10); opacity:0; transform: scale(0.9); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
     .scene.active .ctx { opacity:1; transform:none; transition-delay:900ms; animation: corePulse 3s ease-in-out infinite 1.8s; }
-    @keyframes corePulse { 0%,100%{ box-shadow: 0 18px 36px rgba(255,79,31,0.10) } 50%{ box-shadow: 0 22px 50px rgba(255,79,31,0.20) } }
-    .ctx h4 { margin:0 0 12px; font-size:18px; }
+    .ctx h4 { margin:0 0 12px; font-size:17px; }
     .ctx .signals { display:grid; gap:8px; }
-    .ctx .sig {
-      padding:9px 12px; border-radius:12px; background: rgba(255,255,255,0.85); border:1px solid var(--line);
-      font-size:12px; font-weight:600; color: var(--navy); text-align:left; display:flex; align-items:center; gap:9px;
-      opacity:0; transform: translateY(6px); transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out);
-    }
+    .ctx .sig { padding:9px 12px; border-radius:12px; background: rgba(255,255,255,0.85); border:1px solid var(--line); font-size:12px; font-weight:500; color: var(--navy); text-align:left; display:flex; align-items:center; gap:9px; opacity:0; transform: translateY(6px); transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out); }
     .ctx .sig .d { width:7px; height:7px; border-radius:50%; background: linear-gradient(135deg, var(--orange), var(--teal)); flex:0 0 auto; }
     .scene.active .ctx .sig:nth-child(1){ opacity:1; transform:none; transition-delay:1500ms; }
     .scene.active .ctx .sig:nth-child(2){ opacity:1; transform:none; transition-delay:1680ms; }
     .scene.active .ctx .sig:nth-child(3){ opacity:1; transform:none; transition-delay:1860ms; }
     .scene.active .ctx .sig:nth-child(4){ opacity:1; transform:none; transition-delay:2040ms; }
+    .ctx .result { margin-top:12px; font-size:12px; font-weight:700; color: var(--orange); letter-spacing:0.04em; opacity:0; transition: opacity 460ms var(--ease-out); }
+    .scene.active .ctx .result { opacity:1; transition-delay:2400ms; }
 
-    /* ============ SCENE 4 — Augmentation ============ */
-    .s4-stage { position:absolute; inset:80px 56px 96px; display:flex; align-items:center; justify-content:space-between; gap:26px; }
-    .agent-desk {
-      width:300px; padding:20px; border-radius:22px; background: rgba(255,255,255,0.95); border:1px solid var(--line);
-      box-shadow: 0 16px 34px rgba(35,57,93,0.07);
-      opacity:0; transform: translateX(-16px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
-    }
-    .scene.active .agent-desk { opacity:1; transform:none; transition-delay:200ms; }
-    .agent-desk .top { display:flex; align-items:center; gap:11px; margin-bottom:14px; }
-    .agent-desk .av { width:42px; height:42px; border-radius:14px; background: linear-gradient(135deg, var(--orange), var(--yellow)); box-shadow: 0 12px 20px rgba(255,79,31,0.22); }
-    .agent-desk .top h4 { margin:0; font-size:15px; }
-    .agent-desk .top p { margin:2px 0 0; font-size:11px; color: var(--muted); }
-    .checks { display:grid; gap:9px; }
-    .check {
-      display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:13px;
-      background: rgba(244,247,250,0.85); border:1px solid rgba(35,57,93,0.07); font-size:12.5px; color: var(--navy); font-weight:600;
-      opacity:0; transform: translateX(-8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
-    }
-    .check .tick { width:22px; height:22px; border-radius:50%; background: rgba(0,174,158,0.16); color: var(--teal); display:grid; place-items:center; flex:0 0 auto; transform: scale(0.6); transition: transform 360ms var(--ease-out); }
-    .check .tick svg { width:12px; height:12px; fill: currentColor; }
-    .scene.active .check { opacity:1; transform:none; }
-    .scene.active .check .tick { transform: scale(1); }
-    .scene.active .check:nth-child(1){ transition-delay:1100ms; } .scene.active .check:nth-child(1) .tick{ transition-delay:1300ms; }
-    .scene.active .check:nth-child(2){ transition-delay:1500ms; } .scene.active .check:nth-child(2) .tick{ transition-delay:1700ms; }
-    .scene.active .check:nth-child(3){ transition-delay:1900ms; } .scene.active .check:nth-child(3) .tick{ transition-delay:2100ms; }
-    .scene.active .check:nth-child(4){ transition-delay:2300ms; } .scene.active .check:nth-child(4) .tick{ transition-delay:2500ms; }
+    /* ============ SCENE 5 — Seamless Handoff ============ */
+    .s5-stage { position:absolute; inset:80px 56px 96px; display:grid; align-content:center; justify-items:center; gap:20px; }
+    .ho-flow { display:flex; align-items:center; gap:12px; }
+    .ho-node { padding:13px 18px; border-radius:16px; background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 12px 26px rgba(35,57,93,0.06); font-size:14px; font-weight:700; color: var(--navy); opacity:0; transform: translateY(10px); transition: opacity 440ms var(--ease-out), transform 440ms var(--ease-out); }
+    .ho-node.core { background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(255,143,20,0.06)); border-color: rgba(255,79,31,0.22); }
+    .ho-node.agent { background: linear-gradient(180deg, rgba(0,174,158,0.12), rgba(59,144,170,0.06)); border-color: rgba(0,174,158,0.22); }
+    .ho-arr { color: var(--gray); font-size:18px; font-weight:700; opacity:0; transition: opacity 360ms var(--ease-out); }
+    .scene.active .ho-flow > *:nth-child(1){ opacity:1; transform:none; transition-delay:220ms; }
+    .scene.active .ho-flow > *:nth-child(2){ opacity:1; transition-delay:380ms; }
+    .scene.active .ho-flow > *:nth-child(3){ opacity:1; transform:none; transition-delay:540ms; }
+    .scene.active .ho-flow > *:nth-child(4){ opacity:1; transition-delay:700ms; }
+    .scene.active .ho-flow > *:nth-child(5){ opacity:1; transform:none; transition-delay:860ms; }
 
-    .copilots { width:280px; display:grid; gap:12px; opacity:0; transform: translateX(16px); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
-    .scene.active .copilots { opacity:1; transform:none; transition-delay:3000ms; }
+    .ho-context { width: min(460px, 92%); padding:16px 18px; border-radius:18px; background: rgba(255,255,255,0.96); border:1px solid rgba(0,174,158,0.22); box-shadow: 0 16px 34px rgba(0,174,158,0.10); }
+    .scene.active .ho-context { animation: hoNudge 4400ms var(--ease-out) forwards; }
+    @keyframes hoNudge { 0%{opacity:0; transform: translateY(10px) translateX(-34px);} 14%{opacity:1; transform: translateX(-34px);} 56%{opacity:1; transform: translateX(-34px);} 74%{transform: translateX(44px);} 100%{opacity:1; transform: translateX(44px);} }
+    .ho-context .lab { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color: var(--teal); margin-bottom:10px; }
+    .ho-summary { padding:11px 13px; border-radius:13px; background: rgba(255,79,31,0.07); border:1px solid rgba(255,79,31,0.18); font-size:12.5px; color: var(--navy); line-height:1.45; margin-bottom:12px; }
+    .ho-summary strong { color: var(--orange); }
+    .ho-checks { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    .hochk { display:flex; align-items:center; gap:9px; font-size:12.5px; font-weight:500; color: var(--navy); opacity:0; transform: translateX(-6px); transition: opacity 360ms var(--ease-out), transform 360ms var(--ease-out); }
+    .hochk .tk { width:20px; height:20px; border-radius:50%; background: rgba(0,174,158,0.16); color: var(--teal); display:grid; place-items:center; flex:0 0 auto; }
+    .hochk .tk svg { width:11px; height:11px; fill: currentColor; }
+    .scene.active .hochk:nth-child(1){ opacity:1; transform:none; transition-delay:1200ms; }
+    .scene.active .hochk:nth-child(2){ opacity:1; transform:none; transition-delay:1360ms; }
+    .scene.active .hochk:nth-child(3){ opacity:1; transform:none; transition-delay:1520ms; }
+    .scene.active .hochk:nth-child(4){ opacity:1; transform:none; transition-delay:1680ms; }
+    .ho-badge { display:inline-flex; align-items:center; gap:8px; padding:10px 15px; border-radius:999px; background: rgba(255,79,31,0.08); border:1px solid rgba(255,79,31,0.22); color: var(--orange); font-size:13px; font-weight:700; opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .scene.active .ho-badge { opacity:1; transform:none; transition-delay:3400ms; }
+
+    /* ============ SCENE 6 — Agent Copilot ============ */
+    .s6-stage { position:absolute; inset:80px 56px 96px; display:flex; align-items:center; justify-content:center; gap:30px; }
+    .desktop { width: 348px; border-radius:18px; background:#fff; border:1px solid var(--line); box-shadow: 0 20px 44px rgba(35,57,93,0.10); overflow:hidden; opacity:0; transform: translateY(12px); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
+    .scene.active .desktop { opacity:1; transform:none; transition-delay:200ms; }
+    .desktop .bar { display:flex; align-items:center; gap:7px; padding:11px 14px; background: rgba(35,57,93,0.04); border-bottom:1px solid var(--line); }
+    .desktop .bar .d { width:9px; height:9px; border-radius:50%; }
+    .desktop .bar .d1 { background: var(--orange); } .desktop .bar .d2 { background: var(--yellow); } .desktop .bar .d3 { background: var(--teal); }
+    .desktop .bar .ttl { margin-left:6px; font-size:12px; font-weight:700; color: var(--navy); }
+    .desktop .rows { padding:12px; display:grid; gap:8px; }
+    .drow { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:12px; background: rgba(244,247,250,0.85); border:1px solid rgba(35,57,93,0.07); font-size:12.5px; font-weight:500; color: var(--navy); opacity:0; transform: translateX(-8px); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); }
+    .drow .br { width:26px; height:26px; border-radius:9px; background: rgba(255,79,31,0.10); display:grid; place-items:center; font-size:14px; flex:0 0 auto; }
+    .drow .col { display:flex; flex-direction:column; }
+    .drow .col strong { font-weight:700; }
+    .drow .dsub { font-size:11px; color: var(--muted); font-weight:400; margin-top:2px; }
+    .scene.active .drow:nth-child(1){ opacity:1; transform:none; transition-delay:1000ms; }
+    .scene.active .drow:nth-child(2){ opacity:1; transform:none; transition-delay:1280ms; }
+    .scene.active .drow:nth-child(3){ opacity:1; transform:none; transition-delay:1560ms; }
+    .scene.active .drow:nth-child(4){ opacity:1; transform:none; transition-delay:1840ms; }
+    .scene.active .drow:nth-child(5){ opacity:1; transform:none; transition-delay:2120ms; }
+    .copilots { width:264px; display:grid; gap:12px; opacity:0; transform: translateX(16px); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
+    .scene.active .copilots { opacity:1; transform:none; transition-delay:2700ms; }
     .copilot { padding:16px 18px; border-radius:20px; background: linear-gradient(180deg, rgba(255,79,31,0.10), rgba(255,143,20,0.05)); border:1px solid rgba(255,79,31,0.20); }
     .copilot.alt { background: linear-gradient(180deg, rgba(0,174,158,0.10), rgba(59,144,170,0.05)); border-color: rgba(0,174,158,0.22); }
-    .copilot .t { font-size:11px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color: var(--orange); margin-bottom:7px; }
+    .copilot .t { font-size:11px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color: var(--orange); margin-bottom:7px; }
     .copilot.alt .t { color: var(--teal); }
     .copilot h5 { margin:0 0 5px; font-size:15px; }
     .copilot p { margin:0; font-size:12px; color: var(--muted); line-height:1.5; }
 
-    /* ============ SCENE 5 — Resolution ============ */
-    .s5-stage { position:absolute; inset:80px 56px 96px; display:grid; place-items:center; }
-    .resolve-card {
-      width: min(440px, 92%); padding:26px; border-radius:26px; text-align:center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,250,0.95));
-      border:1px solid var(--line); box-shadow: 0 22px 50px rgba(35,57,93,0.10);
-      opacity:0; transform: scale(0.94); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
-    }
+    /* ============ SCENE 7 — Resolution ============ */
+    .s7-stage { position:absolute; inset:80px 56px 96px; display:grid; place-items:center; }
+    .resolve-card { width: min(440px, 92%); padding:26px; border-radius:26px; text-align:center; background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,250,0.95)); border:1px solid var(--line); box-shadow: 0 22px 50px rgba(35,57,93,0.10); opacity:0; transform: scale(0.94); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
     .scene.active .resolve-card { opacity:1; transform:none; transition-delay:200ms; }
-    .resolve-card .seal {
-      width:64px; height:64px; margin:0 auto 14px; border-radius:50%;
-      background: linear-gradient(135deg, var(--teal), var(--lightblue)); display:grid; place-items:center;
-      box-shadow: 0 16px 30px rgba(0,174,158,0.30);
-      opacity:0; transform: scale(0.5); transition: opacity 460ms var(--ease-out), transform 520ms var(--ease-out);
-    }
+    .resolve-card .seal { width:62px; height:62px; margin:0 auto 14px; border-radius:50%; background: linear-gradient(135deg, var(--teal), var(--lightblue)); display:grid; place-items:center; box-shadow: 0 16px 30px rgba(0,174,158,0.30); opacity:0; transform: scale(0.5); transition: opacity 460ms var(--ease-out), transform 520ms var(--ease-out); }
     .scene.active .resolve-card .seal { opacity:1; transform:scale(1); transition-delay:700ms; }
     .resolve-card .seal svg { width:30px; height:30px; fill:#fff; }
-    .resolve-card h3 { margin:0 0 6px; font-size:20px; letter-spacing:-0.02em; }
-    .resolve-card .flight {
-      margin:14px auto 0; max-width:300px; padding:12px 16px; border-radius:14px;
-      background: rgba(0,174,158,0.07); border:1px solid rgba(0,174,158,0.20);
-      display:flex; align-items:center; justify-content:space-between; font-size:13px; color: var(--navy); font-weight:600;
-      opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
-    }
-    .scene.active .resolve-card .flight { opacity:1; transform:none; transition-delay:1200ms; }
-    .resolve-card .flight .arrow { color: var(--teal); }
-    .csat { margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:6px; opacity:0; transition: opacity 460ms var(--ease-out); }
-    .scene.active .csat { opacity:1; transition-delay:1800ms; }
-    .csat .stars { display:flex; gap:4px; }
-    .csat .stars span { color: var(--yellow); font-size:20px; opacity:0; transform: scale(0.4); transition: opacity 300ms var(--ease-out), transform 360ms var(--ease-out); }
-    .scene.active .csat .stars span:nth-child(1){ opacity:1; transform:none; transition-delay:2000ms; }
-    .scene.active .csat .stars span:nth-child(2){ opacity:1; transform:none; transition-delay:2120ms; }
-    .scene.active .csat .stars span:nth-child(3){ opacity:1; transform:none; transition-delay:2240ms; }
-    .scene.active .csat .stars span:nth-child(4){ opacity:1; transform:none; transition-delay:2360ms; }
-    .scene.active .csat .stars span:nth-child(5){ opacity:1; transform:none; transition-delay:2480ms; }
-    .csat .lbl { font-size:12px; color: var(--muted); font-weight:600; }
+    .resolve-card h3 { margin:0 0 14px; font-size:18px; letter-spacing:-0.02em; }
+    .rchecks { display:grid; gap:8px; max-width:300px; margin:0 auto; }
+    .rchk { display:flex; align-items:center; gap:10px; padding:9px 13px; border-radius:12px; background: rgba(0,174,158,0.07); border:1px solid rgba(0,174,158,0.20); font-size:13px; font-weight:500; color: var(--navy); opacity:0; transform: translateY(6px); transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out); }
+    .rchk .tk { width:20px; height:20px; border-radius:50%; background: var(--teal); color:#fff; display:grid; place-items:center; font-size:11px; flex:0 0 auto; }
+    .scene.active .rchk:nth-child(1){ opacity:1; transform:none; transition-delay:1200ms; }
+    .scene.active .rchk:nth-child(2){ opacity:1; transform:none; transition-delay:1400ms; }
+    .scene.active .rchk:nth-child(3){ opacity:1; transform:none; transition-delay:1600ms; }
+    .resolve-card .outcome { margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out); }
+    .scene.active .resolve-card .outcome { opacity:1; transform:none; transition-delay:2100ms; }
+    .resolve-card .outcome span { font-size:12px; font-weight:700; letter-spacing:0.03em; padding:7px 12px; border-radius:999px; }
+    .resolve-card .outcome .a { color: var(--orange); background: rgba(255,79,31,0.10); }
+    .resolve-card .outcome .b { color: var(--teal); background: rgba(0,174,158,0.10); }
 
-    /* ============ SCENE 6 — Optimization ============ */
-    .s6-stage { position:absolute; inset:80px 56px 96px; display:grid; align-content:center; gap:18px; }
-    .s6-intro {
-      text-align:center; font-size:15px; color: var(--muted); font-weight:600;
-      opacity:0; transform: translateY(-6px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
-    }
-    .s6-intro strong { color: var(--navy); }
-    .scene.active .s6-intro { opacity:1; transform:none; transition-delay:200ms; }
+    /* ============ SCENE 8 — Optimization ============ */
+    .s8-stage { position:absolute; inset:78px 56px 92px; display:grid; align-content:center; gap:16px; }
+    .s8-intro { text-align:center; font-size:14px; color: var(--muted); font-weight:500; opacity:0; transform: translateY(-6px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+    .s8-intro strong { color: var(--navy); font-weight:700; }
+    .scene.active .s8-intro { opacity:1; transform:none; transition-delay:200ms; }
     .opt-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; }
-    .opt-card {
-      padding:16px; border-radius:18px; background: rgba(255,255,255,0.94); border:1px solid var(--line);
-      box-shadow: 0 12px 28px rgba(35,57,93,0.06); position:relative; overflow:hidden;
-      opacity:0; transform: translateY(12px); transition: opacity 480ms var(--ease-out), transform 480ms var(--ease-out);
-    }
+    .opt-card { padding:15px; border-radius:18px; background: rgba(255,255,255,0.94); border:1px solid var(--line); box-shadow: 0 12px 28px rgba(35,57,93,0.06); position:relative; overflow:hidden; opacity:0; transform: translateY(12px); transition: opacity 480ms var(--ease-out), transform 480ms var(--ease-out); }
     .scene.active .opt-card { opacity:1; transform:none; }
-    .scene.active .opt-card:nth-child(1){ transition-delay:700ms; }
-    .scene.active .opt-card:nth-child(2){ transition-delay:880ms; }
-    .scene.active .opt-card:nth-child(3){ transition-delay:1060ms; }
-    .scene.active .opt-card:nth-child(4){ transition-delay:1240ms; }
-    .opt-card .tag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color: var(--orange); margin-bottom:9px; }
+    .scene.active .opt-card:nth-child(1){ transition-delay:650ms; }
+    .scene.active .opt-card:nth-child(2){ transition-delay:820ms; }
+    .scene.active .opt-card:nth-child(3){ transition-delay:990ms; }
+    .scene.active .opt-card:nth-child(4){ transition-delay:1160ms; }
+    .opt-card .tag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color: var(--orange); margin-bottom:8px; }
     .opt-card .tag .b { width:8px; height:8px; border-radius:50%; background: var(--orange); }
-    .opt-card:nth-child(2) .tag, .opt-card:nth-child(2) .tag .b { color: var(--teal); background-color: transparent; }
-    .opt-card:nth-child(2) .tag .b { background: var(--teal); }
+    .opt-card:nth-child(2) .tag { color: var(--teal); } .opt-card:nth-child(2) .tag .b { background: var(--teal); }
     .opt-card:nth-child(3) .tag { color: var(--lightblue); } .opt-card:nth-child(3) .tag .b { background: var(--lightblue); }
     .opt-card:nth-child(4) .tag { color: var(--navy); } .opt-card:nth-child(4) .tag .b { background: var(--navy); }
-    .opt-card h5 { margin:0 0 6px; font-size:14px; letter-spacing:-0.01em; }
+    .opt-card h5 { margin:0 0 6px; font-size:13.5px; letter-spacing:-0.01em; }
     .opt-card p { margin:0; font-size:11.5px; color: var(--muted); line-height:1.5; }
     .opt-card .scan { position:absolute; left:0; top:0; height:100%; width:40%; background: linear-gradient(90deg, transparent, rgba(255,79,31,0.10), transparent); transform: translateX(-120%); }
     .scene.active .opt-card .scan { animation: scan 2.6s ease-in-out infinite; }
@@ -373,59 +331,44 @@
     .scene.active .opt-card:nth-child(3) .scan { animation-delay:.8s; }
     .scene.active .opt-card:nth-child(4) .scan { animation-delay:1.2s; }
     @keyframes scan { 0%{ transform: translateX(-120%) } 55%,100%{ transform: translateX(320%) } }
-    .learn-pill {
-      justify-self:center; display:inline-flex; align-items:center; gap:8px; padding:9px 15px; border-radius:999px;
-      background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.26); color: var(--teal); font-size:12px; font-weight:700;
-      opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out);
-    }
-    .scene.active .learn-pill { opacity:1; transform:none; transition-delay:1700ms; }
-    .learn-pill .dot { width:8px; height:8px; border-radius:50%; background: var(--teal); animation: blink 1.4s ease-in-out infinite; }
-    @keyframes blink { 0%,100%{ opacity:.3 } 50%{ opacity:1 } }
+    .outcomes { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .out-chip { display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:999px; background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.24); color: var(--teal); font-size:12.5px; font-weight:700; opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+    .out-chip .tk { width:17px; height:17px; border-radius:50%; background: var(--teal); color:#fff; display:grid; place-items:center; font-size:10px; flex:0 0 auto; }
+    .scene.active .outcomes .out-chip:nth-child(1){ opacity:1; transform:none; transition-delay:1700ms; }
+    .scene.active .outcomes .out-chip:nth-child(2){ opacity:1; transform:none; transition-delay:1860ms; }
+    .scene.active .outcomes .out-chip:nth-child(3){ opacity:1; transform:none; transition-delay:2020ms; }
+    .scene.active .outcomes .out-chip:nth-child(4){ opacity:1; transform:none; transition-delay:2180ms; }
 
-    /* ============ SCENE 7 — Cierre ============ */
-    .s7-stage { position:absolute; inset:72px 56px 84px; display:grid; align-content:center; gap:22px; }
+    /* ============ SCENE 9 — Cierre ============ */
+    .s9-stage { position:absolute; inset:72px 56px 84px; display:grid; align-content:center; gap:24px; }
     .chain { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px; }
-    .chain .node {
-      padding:10px 14px; border-radius:14px; background: rgba(255,255,255,0.95); border:1px solid var(--line);
-      box-shadow: 0 10px 22px rgba(35,57,93,0.06); font-size:12.5px; font-weight:700; color: var(--navy); white-space:nowrap;
-      opacity:0; transform: translateY(10px) scale(0.96); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
-    }
+    .chain .node { padding:10px 14px; border-radius:14px; background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 10px 22px rgba(35,57,93,0.06); font-size:12.5px; font-weight:700; color: var(--navy); white-space:nowrap; opacity:0; transform: translateY(10px) scale(0.96); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
     .chain .node.accent { background: linear-gradient(135deg, rgba(255,79,31,0.12), rgba(255,143,20,0.06)); border-color: rgba(255,79,31,0.22); }
     .chain .node.teal { background: linear-gradient(135deg, rgba(0,174,158,0.12), rgba(59,144,170,0.06)); border-color: rgba(0,174,158,0.22); }
     .chain .arr { color: var(--gray); font-weight:700; opacity:0; transition: opacity 360ms var(--ease-out); }
     .scene.active .chain > *:nth-child(1){ opacity:1; transform:none; transition-delay:300ms; }
-    .scene.active .chain > *:nth-child(2){ opacity:1; transition-delay:480ms; }
-    .scene.active .chain > *:nth-child(3){ opacity:1; transform:none; transition-delay:660ms; }
-    .scene.active .chain > *:nth-child(4){ opacity:1; transition-delay:840ms; }
-    .scene.active .chain > *:nth-child(5){ opacity:1; transform:none; transition-delay:1020ms; }
-    .scene.active .chain > *:nth-child(6){ opacity:1; transition-delay:1200ms; }
-    .scene.active .chain > *:nth-child(7){ opacity:1; transform:none; transition-delay:1380ms; }
-    .scene.active .chain > *:nth-child(8){ opacity:1; transition-delay:1560ms; }
-    .scene.active .chain > *:nth-child(9){ opacity:1; transform:none; transition-delay:1740ms; }
-    .scene.active .chain > *:nth-child(10){ opacity:1; transition-delay:1920ms; }
-    .scene.active .chain > *:nth-child(11){ opacity:1; transform:none; transition-delay:2100ms; }
-
-    .lockup {
-      text-align:center; opacity:0; transform: translateY(12px);
-      transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out);
-    }
-    .scene.active .lockup { opacity:1; transform:none; transition-delay:2700ms; }
-    .lockup .big {
-      font-size:32px; font-weight:800; letter-spacing:-0.03em; line-height:1.1;
-      background: linear-gradient(120deg, var(--orange), var(--teal));
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-    .lockup .pw { margin-top:10px; display:inline-flex; align-items:center; gap:9px; font-size:14px; color: var(--muted); font-weight:600; }
+    .scene.active .chain > *:nth-child(2){ opacity:1; transition-delay:460ms; }
+    .scene.active .chain > *:nth-child(3){ opacity:1; transform:none; transition-delay:620ms; }
+    .scene.active .chain > *:nth-child(4){ opacity:1; transition-delay:780ms; }
+    .scene.active .chain > *:nth-child(5){ opacity:1; transform:none; transition-delay:940ms; }
+    .scene.active .chain > *:nth-child(6){ opacity:1; transition-delay:1100ms; }
+    .scene.active .chain > *:nth-child(7){ opacity:1; transform:none; transition-delay:1260ms; }
+    .scene.active .chain > *:nth-child(8){ opacity:1; transition-delay:1420ms; }
+    .scene.active .chain > *:nth-child(9){ opacity:1; transform:none; transition-delay:1580ms; }
+    .scene.active .chain > *:nth-child(10){ opacity:1; transition-delay:1740ms; }
+    .scene.active .chain > *:nth-child(11){ opacity:1; transform:none; transition-delay:1900ms; }
+    .scene.active .chain > *:nth-child(12){ opacity:1; transition-delay:2060ms; }
+    .scene.active .chain > *:nth-child(13){ opacity:1; transform:none; transition-delay:2220ms; }
+    .lockup { text-align:center; opacity:0; transform: translateY(12px); transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+    .scene.active .lockup { opacity:1; transform:none; transition-delay:2900ms; }
+    .lockup .big { font-size:32px; font-weight:900; letter-spacing:-0.03em; line-height:1.1; background: linear-gradient(120deg, var(--orange), var(--teal)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .lockup .pw { margin-top:10px; display:inline-flex; align-items:center; gap:9px; font-size:14px; color: var(--muted); font-weight:500; }
     .lockup .pw .gm { width:24px; height:24px; border-radius:8px; background: linear-gradient(135deg, var(--orange), var(--yellow)); }
 
     /* ============ Caption + controls ============ */
-    .caption {
-      margin-top:18px; padding:20px 24px; border-radius:18px; background: rgba(255,255,255,0.9); border:1px solid var(--line);
-      min-height:74px; display:flex; align-items:center; font-size:16px; line-height:1.5; color: var(--text); box-shadow: 0 10px 24px rgba(35,57,93,0.05);
-    }
+    .caption { margin-top:18px; padding:20px 24px; border-radius:18px; background: rgba(255,255,255,0.9); border:1px solid var(--line); min-height:74px; display:flex; align-items:center; font-size:16px; line-height:1.5; color: var(--text); box-shadow: 0 10px 24px rgba(35,57,93,0.05); }
     .caption .text { opacity:0; transform: translateY(6px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
     .caption.show .text { opacity:1; transform:none; }
-
     .controls { margin-top:16px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
     .btn { width:48px; height:48px; border-radius:14px; background:#fff; border:1px solid var(--line); color: var(--orange); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow: 0 10px 24px rgba(35,57,93,0.05); transition: transform 180ms, background 180ms, border-color 180ms; }
     .btn:hover { background: rgba(255,79,31,0.05); border-color: rgba(255,79,31,0.18); }
@@ -441,17 +384,16 @@
 
     @media (max-width: 980px) {
       .scene { padding:26px 18px; }
-      .scene-title { font-size:17px; max-width:92%; bottom:24px; }
+      .scene-title { font-size:16px; max-width:92%; bottom:24px; }
       .caption { font-size:14px; }
-      .s2-stage, .s3-stage, .s4-stage, .s5-stage, .s6-stage, .s7-stage, .s1-stage { inset:66px 16px 84px; }
-      .s2-stage { flex-direction:column; gap:14px; overflow:auto; }
-      .chat { width:100%; max-width:360px; }
+      .s1-stage, .s2-stage, .s3-stage, .s4-stage, .s5-stage, .s6-stage, .s7-stage, .s8-stage, .s9-stage { inset:64px 16px 84px; }
+      .s1-stage, .s2-stage, .s3-stage, .s4-stage, .s6-stage { flex-direction:column; gap:14px; overflow:auto; }
+      .phone { transform:scale(0.9); }
+      .s1-right, .esc-side, .chat, .engine, .ctx, .desktop, .copilots { width:100%; max-width:340px; }
       .s2-flow { display:none; }
-      .s3-stage { flex-direction:column; gap:12px; }
-      .engine, .ctx { width:100%; max-width:320px; }
-      .s4-stage { flex-direction:column; gap:14px; }
-      .agent-desk, .copilots { width:100%; max-width:320px; }
       .opt-grid { grid-template-columns: repeat(2, 1fr); }
+      .ho-flow { flex-wrap:wrap; }
+      .ho-checks { grid-template-columns:1fr; }
       .lockup .big { font-size:24px; }
     }
   </style>
@@ -463,12 +405,12 @@
         <div class="brand-mark" aria-hidden="true"></div>
         <div class="brand-text">
           <div class="top">Genesys</div>
-          <div class="bottom">AI en cada experiencia</div>
+          <div class="bottom">AI Across Every Experience</div>
         </div>
       </div>
       <div class="header-meta">
-       
-        <span class="pill">Un cliente · IA en cada paso</span>
+        <span class="pill">9 escenas</span>
+        <span class="pill">Karla · IA en cada paso</span>
       </div>
     </header>
 
@@ -484,15 +426,28 @@
             <div class="date">Martes 16 de junio</div>
             <div class="notif">
               <div class="ic">✈️</div>
-              <div class="body">
+              <div>
                 <div class="ttl">AEROLÍNEA</div>
-                <div class="msg">Tu vuelo del viernes fue cancelado</div>
+                <div class="msg">Tu vuelo ha sido cancelado</div>
                 <div class="time">ahora</div>
               </div>
             </div>
-            <div class="wa-hint">
-              <span class="wa"><svg viewBox="0 0 24 24"><path d="M12 2a9.9 9.9 0 0 0-8.7 14.6L2 22l5.6-1.3A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3.3.8.9-3.2-.2-.4A8 8 0 1 1 12 20Z"/></svg></span>
-              El cliente abre WhatsApp
+            <div class="pchat">
+              <div class="pbubble">Necesito cambiar mi vuelo</div>
+            </div>
+          </div>
+
+          <div class="s1-right">
+            <div class="s1-channels">
+              <div class="cc"><span class="d"></span> WhatsApp</div>
+              <div class="cc"><span class="d"></span> Voice</div>
+              <div class="cc"><span class="d"></span> Chat</div>
+              <div class="cc"><span class="d"></span> Email</div>
+            </div>
+            <div class="s1-arrow">↓</div>
+            <div class="s1-cloud">
+              <h4>Genesys Cloud</h4>
+              <p>Toda interacción entra aquí, con contexto</p>
             </div>
           </div>
         </div>
@@ -516,7 +471,7 @@
               <div class="typing"><i></i><i></i><i></i></div>
               <div class="bubble in">
                 <span class="vatag"><span class="b"></span> Virtual Agent</span>
-                Encontré 3 opciones disponibles para tu cambio. ¿Cuál prefieres?
+                Encontré 3 opciones disponibles, con horarios y alternativas. ¿Cuál prefieres?
                 <div class="options">
                   <span class="opt">Vie 08:30</span>
                   <span class="opt">Vie 13:15</span>
@@ -527,21 +482,62 @@
           </div>
 
           <div class="s2-flow">
-            <div class="flow-node">Cliente</div>
+            <div class="flow-node">Customer</div>
             <div class="flow-arrow">↓</div>
-            <div class="flow-node core">Virtual Agent<span class="sub">automatiza la solicitud</span></div>
+            <div class="flow-node core">Virtual Agent<span class="sub">+ Virtual Supervisor</span></div>
             <div class="flow-arrow">↓</div>
-            <div class="flow-node">Opciones disponibles</div>
-            <div class="resolved"><span class="tick">✓</span> Muchos casos terminan aquí</div>
+            <div class="flow-node">Available Options</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node">Self-Service Resolution</div>
+            <div class="resolved"><span class="tick">✓</span> Muchas interacciones se resuelven automáticamente</div>
           </div>
         </div>
         <h2 class="scene-title">Automatización: la IA resuelve al instante lo más común.</h2>
       </section>
 
-      <!-- ===== SCENE 3 ===== -->
+      <!-- ===== SCENE 3 — Escalación ===== -->
       <section class="scene" data-scene="3">
-        <div class="scene-label"><span class="num">3</span> Personalization</div>
+        <div class="scene-label"><span class="num">3</span> Escalación</div>
         <div class="s3-stage">
+          <div class="chat">
+            <div class="chat-head">
+              <span class="ava"><svg viewBox="0 0 24 24"><path d="M12 2a9.9 9.9 0 0 0-8.7 14.6L2 22l5.6-1.3A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3.3.8.9-3.2-.2-.4A8 8 0 1 1 12 20Z"/></svg></span>
+              <div>
+                <div class="who">Karla · WhatsApp</div>
+                <div class="sub">en línea</div>
+              </div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble out">Ninguno de esos horarios me sirve 😕</div>
+              <div class="bubble out">Necesito hablar con un agente, por favor</div>
+              <div class="typing"><i></i><i></i><i></i></div>
+              <div class="bubble in">
+                <span class="vatag"><span class="b"></span> Virtual Agent</span>
+                Claro, te conecto con un agente. Llevo todo tu contexto para que no repitas nada.
+              </div>
+            </div>
+          </div>
+
+          <div class="esc-side">
+            <div class="esc-status">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="txt">Conectando con un agente…</span>
+            </div>
+            <div class="esc-route">Predictive Routing<span>Buscando al mejor agente disponible</span></div>
+            <div class="esc-arrow">↓</div>
+            <div class="esc-agent">
+              <h4>Agente</h4>
+              <p>Recibe la conversación con todo el contexto</p>
+            </div>
+          </div>
+        </div>
+        <h2 class="scene-title">Escalación: el cliente pide hablar con un agente.</h2>
+      </section>
+
+      <!-- ===== SCENE 4 — Personalization ===== -->
+      <section class="scene" data-scene="4">
+        <div class="scene-label"><span class="num">4</span> Personalization</div>
+        <div class="s4-stage">
           <div class="engine left">
             <div class="t">Event Data Platform</div>
             <h4>Todos los datos, unificados</h4>
@@ -552,11 +548,12 @@
             <div class="label" style="margin-bottom:12px;">Customer Context</div>
             <h4>Experiencia personalizada</h4>
             <div class="signals">
-              <div class="sig"><span class="d"></span> Quién es el cliente</div>
-              <div class="sig"><span class="d"></span> Su historial</div>
-              <div class="sig"><span class="d"></span> Su intención</div>
-              <div class="sig"><span class="d"></span> Su contexto actual</div>
+              <div class="sig"><span class="d"></span> Customer Profile</div>
+              <div class="sig"><span class="d"></span> Intent</div>
+              <div class="sig"><span class="d"></span> Journey History</div>
+              <div class="sig"><span class="d"></span> Behavioral Signals</div>
             </div>
+            <div class="result">→ Personalized Experience</div>
           </div>
 
           <div class="engine right">
@@ -565,26 +562,52 @@
             <p>Interpreta la intención real detrás de cada mensaje, no solo las palabras.</p>
           </div>
         </div>
-        <h2 class="scene-title">Personalización: la IA entiende quién es y qué quiere lograr.</h2>
+        <h2 class="scene-title">Personalización: la IA entiende la intención y el contexto.</h2>
       </section>
 
-      <!-- ===== SCENE 4 ===== -->
-      <section class="scene" data-scene="4">
-        <div class="scene-label"><span class="num">4</span> Augmentation</div>
-        <div class="s4-stage">
-          <div class="agent-desk">
-            <div class="top">
-              <div class="av" aria-hidden="true"></div>
-              <div>
-                <h4>Agente humano</h4>
-                <p>Recibe la conversación con contexto</p>
-              </div>
+      <!-- ===== SCENE 5 — Seamless Handoff ===== -->
+      <section class="scene" data-scene="5">
+        <div class="scene-label"><span class="num">5</span> Transferencia fluida</div>
+        <div class="s5-stage">
+          <div class="ho-flow">
+            <div class="ho-node">Customer</div>
+            <div class="ho-arr">→</div>
+            <div class="ho-node core">Virtual Agent</div>
+            <div class="ho-arr">→</div>
+            <div class="ho-node agent">Agent</div>
+          </div>
+
+          <div class="ho-context">
+            <div class="lab">El contexto viaja con la conversación</div>
+            <div class="ho-summary"><strong>Karla, 26 años</strong> — quería cambiar su vuelo, pero ningún horario disponible le acomoda. Busca una alternativa.</div>
+            <div class="ho-checks">
+              <div class="hochk"><span class="tk"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Intent Detected</div>
+              <div class="hochk"><span class="tk"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Customer Profile</div>
+              <div class="hochk"><span class="tk"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Previous Actions</div>
+              <div class="hochk"><span class="tk"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Journey History</div>
             </div>
-            <div class="checks">
-              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Resumen generado por IA</div>
-              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Intención detectada</div>
-              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Historial relevante</div>
-              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Recomendaciones</div>
+          </div>
+
+          <div class="ho-badge">Sin necesidad de repetir información</div>
+        </div>
+        <h2 class="scene-title">Transferencia fluida: el contexto viaja con la conversación.</h2>
+      </section>
+
+      <!-- ===== SCENE 6 — Agent Copilot ===== -->
+      <section class="scene" data-scene="6">
+        <div class="scene-label"><span class="num">6</span> Agent Copilot</div>
+        <div class="s6-stage">
+          <div class="desktop">
+            <div class="bar">
+              <span class="d d1"></span><span class="d d2"></span><span class="d d3"></span>
+              <span class="ttl">Agent Desktop · Karla</span>
+            </div>
+            <div class="rows">
+              <div class="drow"><span class="br">🧠</span><span class="col"><strong>Resumen de la conversación</strong><span class="dsub">Karla, 26 · cambio de vuelo · ningún horario disponible le acomoda</span></span></div>
+              <div class="drow"><span class="br">🎯</span> Intención detectada: buscar alternativa</div>
+              <div class="drow"><span class="br">💬</span> Respuesta sugerida</div>
+              <div class="drow"><span class="br">📚</span> Artículo de conocimiento</div>
+              <div class="drow"><span class="br">⚡</span> Siguiente mejor acción</div>
             </div>
           </div>
 
@@ -592,49 +615,44 @@
             <div class="copilot">
               <div class="t">Agent Copilot</div>
               <h5>Asistencia en tiempo real</h5>
-              <p>Resúmenes, respuestas sugeridas, conocimiento y la siguiente mejor acción.</p>
+              <p>Resumen, respuestas sugeridas, conocimiento y la siguiente mejor acción.</p>
             </div>
-            <div class="copilot alt">
-              <div class="t">Genesys Cloud Copilot</div>
-              <h5>Insights y acciones</h5>
-              <p>Información conversacional y acciones con contexto y permisos.</p>
-            </div>
+            
           </div>
         </div>
-        <h2 class="scene-title">Asistencia: la IA potencia al agente con todo el contexto.</h2>
+        <h2 class="scene-title">Agent Copilot: la IA ayuda al agente en tiempo real.</h2>
       </section>
 
-      <!-- ===== SCENE 5 ===== -->
-      <section class="scene" data-scene="5">
-        <div class="scene-label"><span class="num">5</span> Resolución</div>
-        <div class="s5-stage">
+      <!-- ===== SCENE 7 — Resolution ===== -->
+      <section class="scene" data-scene="7">
+        <div class="scene-label"><span class="num">7</span> Resolución</div>
+        <div class="s7-stage">
           <div class="resolve-card">
             <div class="seal"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></div>
-            <div class="label teal" style="margin-bottom:10px;">Confirmado</div>
-            <h3>El cliente acepta su nuevo vuelo</h3>
-            <p class="muted" style="margin:0; font-size:13px;">Recibe la confirmación al instante, sin repetir información.</p>
-            <div class="flight">
-              <span>Vie 13:15 · CDMX → GDL</span>
-              <span class="arrow">✓ Reagendado</span>
+            <h3>El agente encontró la mejor alternativa para Karla</h3>
+            <div class="rchecks">
+              <div class="rchk"><span class="tk">✓</span> Karla acepta la alternativa</div>
+              <div class="rchk"><span class="tk">✓</span> El agente resuelve con confianza</div>
+              <div class="rchk"><span class="tk">✓</span> Caso resuelto y confirmado</div>
             </div>
-            <div class="csat">
-              <div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-              <div class="lbl">Cliente satisfecho</div>
+            <div class="outcome">
+              <span class="a">Resolución más rápida</span>
+              <span class="b">Mejor experiencia</span>
             </div>
           </div>
         </div>
-        <h2 class="scene-title">Resolución: sin repetir nada y con menos esfuerzo para todos.</h2>
+        <h2 class="scene-title">Resolución: más rápido y con mayor confianza.</h2>
       </section>
 
-      <!-- ===== SCENE 6 ===== -->
-      <section class="scene" data-scene="6">
-        <div class="scene-label"><span class="num">6</span> Optimization</div>
-        <div class="s6-stage">
-          <div class="s6-intro">Mientras todo esto sucede… <strong>Genesys está aprendiendo.</strong></div>
+      <!-- ===== SCENE 8 — Optimization ===== -->
+      <section class="scene" data-scene="8">
+        <div class="scene-label"><span class="num">8</span> Optimization</div>
+        <div class="s8-stage">
+          <div class="s8-intro">Mientras todo esto sucede… <strong>Genesys optimiza continuamente la operación</strong> — todo conectado a Genesys Cloud.</div>
           <div class="opt-grid">
             <div class="opt-card"><span class="scan"></span>
               <div class="tag"><span class="b"></span> Journey Management</div>
-              <h5>Entiende y mejora journeys</h5>
+              <h5>Mejora los journeys</h5>
               <p>Detecta patrones y oportunidades de mejora en la experiencia.</p>
             </div>
             <div class="opt-card"><span class="scan"></span>
@@ -653,27 +671,34 @@
               <p>Convierte el pronóstico en turnos y mejor cobertura.</p>
             </div>
           </div>
-          <div class="learn-pill"><span class="dot"></span> Analizando la operación en tiempo real</div>
+          <div class="outcomes">
+            <span class="out-chip"><span class="tk">✓</span> Mejor enrutamiento</span>
+            <span class="out-chip"><span class="tk">✓</span> Mejor cobertura</span>
+            <span class="out-chip"><span class="tk">✓</span> Mejores journeys</span>
+            <span class="out-chip"><span class="tk">✓</span> Mejores resultados</span>
+          </div>
         </div>
-        <h2 class="scene-title">Optimización: Genesys aprende y mejora de forma continua.</h2>
+        <h2 class="scene-title">Optimización: cada interacción mejora la siguiente.</h2>
       </section>
 
-      <!-- ===== SCENE 7 ===== -->
-      <section class="scene" data-scene="7">
-        <div class="scene-label"><span class="num">7</span> Cierre</div>
-        <div class="s7-stage">
+      <!-- ===== SCENE 9 — Cierre ===== -->
+      <section class="scene" data-scene="9">
+        <div class="scene-label"><span class="num">9</span> Cierre</div>
+        <div class="s9-stage">
           <div class="chain">
-            <span class="node">Cliente</span>
+            <span class="node">Customer</span>
             <span class="arr">→</span>
             <span class="node accent">Virtual Agent</span>
             <span class="arr">→</span>
             <span class="node teal">Intent AI + Event Data</span>
             <span class="arr">→</span>
+            <span class="node">Agent</span>
+            <span class="arr">→</span>
             <span class="node accent">Agent Copilot</span>
             <span class="arr">→</span>
             <span class="node teal">Journey Management</span>
             <span class="arr">→</span>
-            <span class="node">Resultado</span>
+            <span class="node">Better Experience</span>
           </div>
 
           <div class="lockup">
@@ -697,19 +722,21 @@
       </button>
       <div class="progress-wrap"><div class="progress" id="progress"></div></div>
       <div class="scene-dots" id="dots"></div>
-      <div class="indicator" id="indicator">0.0 / 46.0s</div>
+      <div class="indicator" id="indicator">0.0 / 58.5s</div>
     </div>
   </div>
 
   <script>
     const SCENES = [
-      { id: 1, duration: 5500, caption: "Todo comienza cuando un cliente necesita ayuda." },
-      { id: 2, duration: 8500, caption: "Genesys usa IA para automatizar las solicitudes comunes y ayudar al cliente al instante." },
-      { id: 3, duration: 7000, caption: "Genesys entiende quién es el cliente y qué está tratando de lograr." },
-      { id: 4, duration: 7500, caption: "Cuando interviene una persona, la IA la ayuda a actuar más rápido y con más contexto." },
-      { id: 5, duration: 5500, caption: "La experiencia se resuelve sin repetir información y con menos esfuerzo para todos." },
-      { id: 6, duration: 6500, caption: "Mientras todo sucede, Genesys aprende y optimiza la operación de forma continua." },
-      { id: 7, duration: 5500, caption: "Genesys conecta automatización, personalización, asistencia e inteligencia operativa para orquestar mejores experiencias." }
+      { id: 1, duration: 6500, caption: "Todo comienza cuando un cliente necesita ayuda." },
+      { id: 2, duration: 8000, caption: "Genesys utiliza inteligencia artificial para automatizar solicitudes comunes y ayudar a los clientes de inmediato." },
+      { id: 3, duration: 6000, caption: "Cuando ninguna opción funciona, el cliente puede pedir hablar con una persona — sin perder lo que ya avanzó." },
+      { id: 4, duration: 6500, caption: "La inteligencia artificial entiende la intención y el contexto de cada cliente para ofrecer una experiencia personalizada." },
+      { id: 5, duration: 7000, caption: "Cuando se necesita apoyo humano, el contexto viaja con la conversación." },
+      { id: 6, duration: 7000, caption: "Agent Copilot ayuda al agente a comprender la situación y actuar más rápido." },
+      { id: 7, duration: 5500, caption: "Con el apoyo de la IA, los agentes resuelven más rápido y con mayor confianza." },
+      { id: 8, duration: 6000, caption: "Cada interacción ayuda a mejorar futuras experiencias para clientes, agentes y supervisores." },
+      { id: 9, duration: 6000, caption: "Genesys conecta automatización, personalización, asistencia e inteligencia operativa para orquestar mejores experiencias." }
     ];
 
     const TOTAL = SCENES.reduce((s, x) => s + x.duration, 0);
@@ -761,10 +788,7 @@
       const dt = now - lastTick;
       lastTick = now;
       elapsed += dt;
-      if (elapsed >= TOTAL) {
-        elapsed = TOTAL; playing = false;
-        updateUI(); setPlayIcon(false); return;
-      }
+      if (elapsed >= TOTAL) { elapsed = TOTAL; playing = false; updateUI(); setPlayIcon(false); return; }
       const idx = getSceneAtTime(elapsed);
       if (idx !== currentScene) setScene(idx);
       updateUI();
@@ -782,7 +806,6 @@
       playing = true; lastTick = performance.now(); setPlayIcon(true);
       rafId = requestAnimationFrame(tick);
     }
-
     function pause() { playing = false; cancelAnimationFrame(rafId); setPlayIcon(false); }
 
     function restart(autoplay = true) {
