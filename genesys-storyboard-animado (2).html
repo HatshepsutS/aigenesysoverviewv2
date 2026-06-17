@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genesys · AI en cada experiencia</title>
+  <style>
+    :root {
+      /* Genesys brand palette */
+      --orange: #FF4F1F;
+      --navy: #23395D;
+      --teal: #00AE9E;
+      --lightblue: #3B90AA;
+      --yellow: #FF8F14;
+      --charcoal: #4E5054;
+      --gray: #959699;
+
+      --bg: #f5f7fa;
+      --panel: rgba(255,255,255,0.92);
+      --text: var(--navy);
+      --muted: #5E6573;
+      --line: rgba(35, 57, 93, 0.10);
+      --accent: var(--orange);
+      --shadow: 0 24px 60px rgba(35, 57, 93, 0.10);
+      --radius: 26px;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,79,31,0.10), transparent 24%),
+        radial-gradient(circle at 90% 10%, rgba(0,174,158,0.08), transparent 22%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      overflow-x: hidden;
+    }
+
+    .app { max-width: 1320px; margin: 0 auto; padding: 26px 30px 36px; }
+
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark {
+      width: 44px; height: 44px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--orange), var(--yellow));
+      box-shadow: 0 12px 24px rgba(255,79,31,0.26);
+      position: relative; overflow: hidden;
+    }
+    .brand-mark::before { content:""; position:absolute; inset:0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.40), transparent 36%); }
+    .brand-text .top { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    .brand-text .bottom { margin-top: 4px; font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+    .header-meta { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill { font-size: 12px; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,0.9); border: 1px solid var(--line); color: var(--muted); box-shadow: 0 10px 25px rgba(35,57,93,0.05); }
+
+    .stage-wrap {
+      position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 70vh;
+      border-radius: var(--radius); overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(255,79,31,0.09), transparent 26%),
+        radial-gradient(circle at 84% 18%, rgba(0,174,158,0.08), transparent 22%),
+        linear-gradient(180deg, rgba(255,255,255,0.88), rgba(244,247,250,0.96));
+      border: 1px solid rgba(35,57,93,0.08); box-shadow: var(--shadow);
+    }
+    .stage-wrap::before, .stage-wrap::after { content:""; position:absolute; width:420px; height:420px; border-radius:50%; filter: blur(70px); opacity:0.42; pointer-events:none; }
+    .stage-wrap::before { left:-140px; top:-140px; background: radial-gradient(circle, rgba(255,79,31,0.20), transparent 60%); animation: drift1 15s ease-in-out infinite; }
+    .stage-wrap::after { right:-120px; bottom:-130px; background: radial-gradient(circle, rgba(0,174,158,0.20), transparent 62%); animation: drift2 18s ease-in-out infinite; }
+    @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(22px,32px)} }
+    @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-24px,-30px)} }
+
+    .scene { position:absolute; inset:0; padding:42px 56px; opacity:0; visibility:hidden; transition: opacity 520ms var(--ease); }
+    .scene.active { opacity:1; visibility:visible; }
+
+    .scene-label {
+      position:absolute; top:28px; left:32px; z-index: 3;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:9px 12px; border-radius:999px;
+      background: rgba(255,255,255,0.9); border:1px solid var(--line); color: var(--muted);
+      font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
+      box-shadow: 0 10px 20px rgba(35,57,93,0.05);
+    }
+    .scene-label .num {
+      width:22px; height:22px; border-radius:7px;
+      background: linear-gradient(135deg, var(--orange), var(--yellow)); color:#fff;
+      display:inline-flex; align-items:center; justify-content:center; font-size:11px; flex:0 0 auto;
+    }
+
+    .scene-title {
+      position:absolute; left:32px; right:32px; bottom:30px; z-index: 3;
+      font-size:24px; font-weight:700; letter-spacing:-0.03em; line-height:1.18;
+      opacity:0; transform:translateY(12px);
+      transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+      max-width:78%;
+    }
+    .scene.active .scene-title { opacity:1; transform:translateY(0); transition-delay:300ms; }
+
+    .label {
+      display:inline-flex; align-items:center; gap:8px; padding:7px 11px; border-radius:999px;
+      background: rgba(255,79,31,0.10); color: var(--orange); font-size:12px; font-weight:700; border:1px solid rgba(255,79,31,0.20);
+    }
+    .label.teal { background: rgba(0,174,158,0.10); color: var(--teal); border-color: rgba(0,174,158,0.22); }
+    .muted { color: var(--muted); }
+
+    .icon-chip {
+      width:34px; height:34px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+      background: rgba(255,79,31,0.10); border:1px solid rgba(255,79,31,0.16); color: var(--orange); flex:0 0 auto;
+    }
+    .icon-chip.teal { background: rgba(0,174,158,0.10); border-color: rgba(0,174,158,0.18); color: var(--teal); }
+    .icon-chip svg { width:18px; height:18px; fill: currentColor; }
+
+    /* ============ SCENE 1 — El inicio ============ */
+    .s1-stage { position:absolute; inset:80px 56px 96px; display:grid; place-items:center; }
+
+    .phone {
+      width: 248px; height: 392px; border-radius: 36px;
+      background: linear-gradient(180deg, #ffffff, #f3f6fb);
+      border: 1px solid var(--line);
+      box-shadow: 0 30px 60px rgba(35,57,93,0.16), inset 0 0 0 6px rgba(255,255,255,0.7);
+      padding: 16px 14px; position: relative; overflow: hidden;
+      opacity:0; transform: translateY(16px) scale(0.96);
+      transition: opacity 560ms var(--ease-out), transform 560ms var(--ease-out);
+    }
+    .scene.active .phone { opacity:1; transform: translateY(0) scale(1); transition-delay:120ms; }
+    .phone .notch { width:96px; height:7px; border-radius:99px; background: rgba(35,57,93,0.18); margin:2px auto 16px; }
+    .phone .clock { text-align:center; font-size:40px; font-weight:700; letter-spacing:-0.04em; color: var(--navy); opacity:0.92; }
+    .phone .date { text-align:center; font-size:12px; color: var(--muted); margin-top:2px; margin-bottom:20px; }
+
+    .notif {
+      background: rgba(255,255,255,0.96); border:1px solid var(--line); border-radius:18px;
+      padding:12px 13px; display:flex; gap:11px; align-items:flex-start;
+      box-shadow: 0 14px 30px rgba(35,57,93,0.12);
+      opacity:0; transform: translateY(-20px);
+      transition: opacity 500ms var(--ease-out), transform 600ms var(--ease-out);
+    }
+    .scene.active .notif { opacity:1; transform: translateY(0); transition-delay:900ms; }
+    .notif .ic { width:34px; height:34px; border-radius:10px; background: linear-gradient(135deg, var(--orange), var(--yellow)); display:grid; place-items:center; font-size:17px; flex:0 0 auto; }
+    .notif .body { min-width:0; }
+    .notif .ttl { font-size:11px; font-weight:700; color: var(--navy); letter-spacing:0.02em; }
+    .notif .msg { font-size:13px; font-weight:600; color: var(--navy); margin-top:2px; line-height:1.3; }
+    .notif .time { font-size:10px; color: var(--gray); margin-top:4px; }
+
+    .wa-hint {
+      margin-top: 18px; display:flex; align-items:center; gap:9px; justify-content:center;
+      padding:9px 13px; border-radius:14px; background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.22);
+      font-size:12px; color: var(--navy); font-weight:600;
+      opacity:0; transform: translateY(10px);
+      transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+    }
+    .scene.active .wa-hint { opacity:1; transform:translateY(0); transition-delay:1700ms; }
+    .wa-hint .wa { width:22px; height:22px; border-radius:50%; background: var(--teal); display:grid; place-items:center; }
+    .wa-hint .wa svg { width:13px; height:13px; fill:#fff; }
+
+    /* ============ SCENE 2 — Automation (chat) ============ */
+    .s2-stage { position:absolute; inset:78px 56px 96px; display:flex; align-items:center; justify-content:center; gap:34px; }
+
+    .chat {
+      width: 360px; border-radius:24px; background: rgba(255,255,255,0.96); border:1px solid var(--line);
+      box-shadow: 0 20px 44px rgba(35,57,93,0.10); overflow:hidden;
+      opacity:0; transform: translateY(12px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+    }
+    .scene.active .chat { opacity:1; transform:translateY(0); transition-delay:160ms; }
+    .chat-head { display:flex; align-items:center; gap:10px; padding:12px 14px; background: rgba(0,174,158,0.08); border-bottom:1px solid var(--line); }
+    .chat-head .ava { width:30px; height:30px; border-radius:50%; background: var(--teal); display:grid; place-items:center; }
+    .chat-head .ava svg { width:16px; height:16px; fill:#fff; }
+    .chat-head .who { font-size:13px; font-weight:700; color: var(--navy); }
+    .chat-head .sub { font-size:10px; color: var(--muted); }
+    .chat-body { padding:14px; display:flex; flex-direction:column; gap:9px; min-height: 232px; }
+
+    .bubble { max-width:80%; padding:10px 13px; border-radius:16px; font-size:13px; line-height:1.42; opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); }
+    .bubble.out { align-self:flex-end; background: linear-gradient(135deg, rgba(0,174,158,0.18), rgba(0,174,158,0.10)); border:1px solid rgba(0,174,158,0.25); border-bottom-right-radius:6px; color: var(--navy); }
+    .bubble.in { align-self:flex-start; background:#fff; border:1px solid var(--line); border-bottom-left-radius:6px; box-shadow: 0 6px 16px rgba(35,57,93,0.06); }
+    .bubble.in .vatag { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color: var(--orange); margin-bottom:6px; }
+    .bubble.in .vatag .b { width:6px; height:6px; border-radius:50%; background: var(--orange); }
+
+    .scene.active .bubble.out { opacity:1; transform:translateY(0); transition-delay:700ms; }
+    .scene.active .bubble.in  { opacity:1; transform:translateY(0); transition-delay:3300ms; }
+
+    .typing {
+      align-self:flex-start; display:inline-flex; gap:5px; align-items:center;
+      padding:11px 14px; border-radius:16px; border-bottom-left-radius:6px;
+      background:#fff; border:1px solid var(--line); overflow:hidden; opacity:0;
+    }
+    .scene.active .typing { animation: typingLife 2000ms var(--ease-out) 1500ms forwards; }
+    @keyframes typingLife {
+      0%   { opacity:0; transform:translateY(6px); max-height:42px; margin-bottom:0; padding-top:11px; padding-bottom:11px; }
+      14%  { opacity:1; transform:none; }
+      80%  { opacity:1; max-height:42px; }
+      100% { opacity:0; transform:translateY(-4px); max-height:0; margin-bottom:-9px; padding-top:0; padding-bottom:0; border-width:0; }
+    }
+    .typing i { width:7px; height:7px; border-radius:50%; background: var(--gray); animation: bounce 1s infinite ease-in-out; }
+    .typing i:nth-child(2){ animation-delay:.15s } .typing i:nth-child(3){ animation-delay:.3s }
+    @keyframes bounce { 0%,80%,100%{ transform:translateY(0); opacity:.45 } 40%{ transform:translateY(-5px); opacity:1 } }
+
+    .options { display:flex; gap:7px; flex-wrap:wrap; margin-top:4px; }
+    .opt {
+      padding:8px 12px; border-radius:12px; font-size:12px; font-weight:600; color: var(--navy);
+      background: rgba(255,79,31,0.07); border:1px solid rgba(255,79,31,0.20);
+      opacity:0; transform: translateY(8px) scale(0.96);
+      transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out);
+    }
+    .scene.active .opt:nth-child(1){ opacity:1; transform:none; transition-delay:4200ms; }
+    .scene.active .opt:nth-child(2){ opacity:1; transform:none; transition-delay:4380ms; }
+    .scene.active .opt:nth-child(3){ opacity:1; transform:none; transition-delay:4560ms; }
+
+    .s2-flow { width: 210px; display:grid; gap:10px; justify-items:center; }
+    .flow-node {
+      width:100%; text-align:center; padding:12px 14px; border-radius:16px;
+      background: rgba(255,255,255,0.95); border:1px solid var(--line); box-shadow: 0 12px 26px rgba(35,57,93,0.06);
+      font-size:13px; font-weight:700; color: var(--navy);
+      opacity:0; transform: translateX(16px);
+      transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out);
+    }
+    .flow-node .sub { display:block; font-size:11px; font-weight:500; color: var(--muted); margin-top:2px; }
+    .flow-node.core { background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(255,143,20,0.06)); border-color: rgba(255,79,31,0.22); }
+    .flow-arrow { color: var(--gray); font-size:14px; line-height:1; opacity:0; transition: opacity 360ms var(--ease-out); }
+    .scene.active .s2-flow > *:nth-child(1){ opacity:1; transform:none; transition-delay:4900ms; }
+    .scene.active .s2-flow > *:nth-child(2){ opacity:1; transition-delay:5100ms; }
+    .scene.active .s2-flow > *:nth-child(3){ opacity:1; transform:none; transition-delay:5300ms; }
+    .scene.active .s2-flow > *:nth-child(4){ opacity:1; transition-delay:5500ms; }
+    .scene.active .s2-flow > *:nth-child(5){ opacity:1; transform:none; transition-delay:5700ms; }
+
+    .resolved {
+      margin-top:4px; display:inline-flex; align-items:center; gap:8px; padding:9px 13px; border-radius:999px;
+      background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.28); color: var(--teal); font-size:12px; font-weight:700;
+      opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out);
+    }
+    .scene.active .resolved { opacity:1; transform:none; transition-delay:6200ms; }
+    .resolved .tick { width:18px; height:18px; border-radius:50%; background: var(--teal); color:#fff; display:grid; place-items:center; font-size:11px; }
+
+    /* ============ SCENE 3 — Personalization ============ */
+    .s3-stage { position:absolute; inset:80px 56px 96px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+    .engine {
+      width:230px; padding:18px; border-radius:22px; background: rgba(255,255,255,0.95); border:1px solid var(--line);
+      box-shadow: 0 14px 30px rgba(35,57,93,0.06);
+      opacity:0; transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+    }
+    .engine.left { transform: translateX(-18px); }
+    .engine.right { transform: translateX(18px); }
+    .scene.active .engine.left { opacity:1; transform:none; transition-delay:260ms; }
+    .scene.active .engine.right { opacity:1; transform:none; transition-delay:520ms; }
+    .engine .t { font-size:12px; font-weight:800; color: var(--orange); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
+    .engine.right .t { color: var(--teal); }
+    .engine h4 { margin:0 0 6px; font-size:15px; letter-spacing:-0.01em; }
+    .engine p { margin:0; font-size:12px; color: var(--muted); line-height:1.5; }
+
+    .ctx {
+      width:250px; padding:20px; border-radius:24px; text-align:center;
+      background: linear-gradient(180deg, rgba(255,79,31,0.12), rgba(0,174,158,0.08));
+      border:1px solid rgba(255,79,31,0.20); box-shadow: 0 18px 36px rgba(255,79,31,0.10);
+      opacity:0; transform: scale(0.9);
+      transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
+    }
+    .scene.active .ctx { opacity:1; transform:none; transition-delay:900ms; animation: corePulse 3s ease-in-out infinite 1.8s; }
+    @keyframes corePulse { 0%,100%{ box-shadow: 0 18px 36px rgba(255,79,31,0.10) } 50%{ box-shadow: 0 22px 50px rgba(255,79,31,0.20) } }
+    .ctx h4 { margin:0 0 12px; font-size:18px; }
+    .ctx .signals { display:grid; gap:8px; }
+    .ctx .sig {
+      padding:9px 12px; border-radius:12px; background: rgba(255,255,255,0.85); border:1px solid var(--line);
+      font-size:12px; font-weight:600; color: var(--navy); text-align:left; display:flex; align-items:center; gap:9px;
+      opacity:0; transform: translateY(6px); transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out);
+    }
+    .ctx .sig .d { width:7px; height:7px; border-radius:50%; background: linear-gradient(135deg, var(--orange), var(--teal)); flex:0 0 auto; }
+    .scene.active .ctx .sig:nth-child(1){ opacity:1; transform:none; transition-delay:1500ms; }
+    .scene.active .ctx .sig:nth-child(2){ opacity:1; transform:none; transition-delay:1680ms; }
+    .scene.active .ctx .sig:nth-child(3){ opacity:1; transform:none; transition-delay:1860ms; }
+    .scene.active .ctx .sig:nth-child(4){ opacity:1; transform:none; transition-delay:2040ms; }
+
+    /* ============ SCENE 4 — Augmentation ============ */
+    .s4-stage { position:absolute; inset:80px 56px 96px; display:flex; align-items:center; justify-content:space-between; gap:26px; }
+    .agent-desk {
+      width:300px; padding:20px; border-radius:22px; background: rgba(255,255,255,0.95); border:1px solid var(--line);
+      box-shadow: 0 16px 34px rgba(35,57,93,0.07);
+      opacity:0; transform: translateX(-16px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+    }
+    .scene.active .agent-desk { opacity:1; transform:none; transition-delay:200ms; }
+    .agent-desk .top { display:flex; align-items:center; gap:11px; margin-bottom:14px; }
+    .agent-desk .av { width:42px; height:42px; border-radius:14px; background: linear-gradient(135deg, var(--orange), var(--yellow)); box-shadow: 0 12px 20px rgba(255,79,31,0.22); }
+    .agent-desk .top h4 { margin:0; font-size:15px; }
+    .agent-desk .top p { margin:2px 0 0; font-size:11px; color: var(--muted); }
+    .checks { display:grid; gap:9px; }
+    .check {
+      display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:13px;
+      background: rgba(244,247,250,0.85); border:1px solid rgba(35,57,93,0.07); font-size:12.5px; color: var(--navy); font-weight:600;
+      opacity:0; transform: translateX(-8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+    }
+    .check .tick { width:22px; height:22px; border-radius:50%; background: rgba(0,174,158,0.16); color: var(--teal); display:grid; place-items:center; flex:0 0 auto; transform: scale(0.6); transition: transform 360ms var(--ease-out); }
+    .check .tick svg { width:12px; height:12px; fill: currentColor; }
+    .scene.active .check { opacity:1; transform:none; }
+    .scene.active .check .tick { transform: scale(1); }
+    .scene.active .check:nth-child(1){ transition-delay:1100ms; } .scene.active .check:nth-child(1) .tick{ transition-delay:1300ms; }
+    .scene.active .check:nth-child(2){ transition-delay:1500ms; } .scene.active .check:nth-child(2) .tick{ transition-delay:1700ms; }
+    .scene.active .check:nth-child(3){ transition-delay:1900ms; } .scene.active .check:nth-child(3) .tick{ transition-delay:2100ms; }
+    .scene.active .check:nth-child(4){ transition-delay:2300ms; } .scene.active .check:nth-child(4) .tick{ transition-delay:2500ms; }
+
+    .copilots { width:280px; display:grid; gap:12px; opacity:0; transform: translateX(16px); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out); }
+    .scene.active .copilots { opacity:1; transform:none; transition-delay:3000ms; }
+    .copilot { padding:16px 18px; border-radius:20px; background: linear-gradient(180deg, rgba(255,79,31,0.10), rgba(255,143,20,0.05)); border:1px solid rgba(255,79,31,0.20); }
+    .copilot.alt { background: linear-gradient(180deg, rgba(0,174,158,0.10), rgba(59,144,170,0.05)); border-color: rgba(0,174,158,0.22); }
+    .copilot .t { font-size:11px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase; color: var(--orange); margin-bottom:7px; }
+    .copilot.alt .t { color: var(--teal); }
+    .copilot h5 { margin:0 0 5px; font-size:15px; }
+    .copilot p { margin:0; font-size:12px; color: var(--muted); line-height:1.5; }
+
+    /* ============ SCENE 5 — Resolution ============ */
+    .s5-stage { position:absolute; inset:80px 56px 96px; display:grid; place-items:center; }
+    .resolve-card {
+      width: min(440px, 92%); padding:26px; border-radius:26px; text-align:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,247,250,0.95));
+      border:1px solid var(--line); box-shadow: 0 22px 50px rgba(35,57,93,0.10);
+      opacity:0; transform: scale(0.94); transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
+    }
+    .scene.active .resolve-card { opacity:1; transform:none; transition-delay:200ms; }
+    .resolve-card .seal {
+      width:64px; height:64px; margin:0 auto 14px; border-radius:50%;
+      background: linear-gradient(135deg, var(--teal), var(--lightblue)); display:grid; place-items:center;
+      box-shadow: 0 16px 30px rgba(0,174,158,0.30);
+      opacity:0; transform: scale(0.5); transition: opacity 460ms var(--ease-out), transform 520ms var(--ease-out);
+    }
+    .scene.active .resolve-card .seal { opacity:1; transform:scale(1); transition-delay:700ms; }
+    .resolve-card .seal svg { width:30px; height:30px; fill:#fff; }
+    .resolve-card h3 { margin:0 0 6px; font-size:20px; letter-spacing:-0.02em; }
+    .resolve-card .flight {
+      margin:14px auto 0; max-width:300px; padding:12px 16px; border-radius:14px;
+      background: rgba(0,174,158,0.07); border:1px solid rgba(0,174,158,0.20);
+      display:flex; align-items:center; justify-content:space-between; font-size:13px; color: var(--navy); font-weight:600;
+      opacity:0; transform: translateY(8px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+    }
+    .scene.active .resolve-card .flight { opacity:1; transform:none; transition-delay:1200ms; }
+    .resolve-card .flight .arrow { color: var(--teal); }
+    .csat { margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:6px; opacity:0; transition: opacity 460ms var(--ease-out); }
+    .scene.active .csat { opacity:1; transition-delay:1800ms; }
+    .csat .stars { display:flex; gap:4px; }
+    .csat .stars span { color: var(--yellow); font-size:20px; opacity:0; transform: scale(0.4); transition: opacity 300ms var(--ease-out), transform 360ms var(--ease-out); }
+    .scene.active .csat .stars span:nth-child(1){ opacity:1; transform:none; transition-delay:2000ms; }
+    .scene.active .csat .stars span:nth-child(2){ opacity:1; transform:none; transition-delay:2120ms; }
+    .scene.active .csat .stars span:nth-child(3){ opacity:1; transform:none; transition-delay:2240ms; }
+    .scene.active .csat .stars span:nth-child(4){ opacity:1; transform:none; transition-delay:2360ms; }
+    .scene.active .csat .stars span:nth-child(5){ opacity:1; transform:none; transition-delay:2480ms; }
+    .csat .lbl { font-size:12px; color: var(--muted); font-weight:600; }
+
+    /* ============ SCENE 6 — Optimization ============ */
+    .s6-stage { position:absolute; inset:80px 56px 96px; display:grid; align-content:center; gap:18px; }
+    .s6-intro {
+      text-align:center; font-size:15px; color: var(--muted); font-weight:600;
+      opacity:0; transform: translateY(-6px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out);
+    }
+    .s6-intro strong { color: var(--navy); }
+    .scene.active .s6-intro { opacity:1; transform:none; transition-delay:200ms; }
+    .opt-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; }
+    .opt-card {
+      padding:16px; border-radius:18px; background: rgba(255,255,255,0.94); border:1px solid var(--line);
+      box-shadow: 0 12px 28px rgba(35,57,93,0.06); position:relative; overflow:hidden;
+      opacity:0; transform: translateY(12px); transition: opacity 480ms var(--ease-out), transform 480ms var(--ease-out);
+    }
+    .scene.active .opt-card { opacity:1; transform:none; }
+    .scene.active .opt-card:nth-child(1){ transition-delay:700ms; }
+    .scene.active .opt-card:nth-child(2){ transition-delay:880ms; }
+    .scene.active .opt-card:nth-child(3){ transition-delay:1060ms; }
+    .scene.active .opt-card:nth-child(4){ transition-delay:1240ms; }
+    .opt-card .tag { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color: var(--orange); margin-bottom:9px; }
+    .opt-card .tag .b { width:8px; height:8px; border-radius:50%; background: var(--orange); }
+    .opt-card:nth-child(2) .tag, .opt-card:nth-child(2) .tag .b { color: var(--teal); background-color: transparent; }
+    .opt-card:nth-child(2) .tag .b { background: var(--teal); }
+    .opt-card:nth-child(3) .tag { color: var(--lightblue); } .opt-card:nth-child(3) .tag .b { background: var(--lightblue); }
+    .opt-card:nth-child(4) .tag { color: var(--navy); } .opt-card:nth-child(4) .tag .b { background: var(--navy); }
+    .opt-card h5 { margin:0 0 6px; font-size:14px; letter-spacing:-0.01em; }
+    .opt-card p { margin:0; font-size:11.5px; color: var(--muted); line-height:1.5; }
+    .opt-card .scan { position:absolute; left:0; top:0; height:100%; width:40%; background: linear-gradient(90deg, transparent, rgba(255,79,31,0.10), transparent); transform: translateX(-120%); }
+    .scene.active .opt-card .scan { animation: scan 2.6s ease-in-out infinite; }
+    .scene.active .opt-card:nth-child(2) .scan { animation-delay:.4s; }
+    .scene.active .opt-card:nth-child(3) .scan { animation-delay:.8s; }
+    .scene.active .opt-card:nth-child(4) .scan { animation-delay:1.2s; }
+    @keyframes scan { 0%{ transform: translateX(-120%) } 55%,100%{ transform: translateX(320%) } }
+    .learn-pill {
+      justify-self:center; display:inline-flex; align-items:center; gap:8px; padding:9px 15px; border-radius:999px;
+      background: rgba(0,174,158,0.10); border:1px solid rgba(0,174,158,0.26); color: var(--teal); font-size:12px; font-weight:700;
+      opacity:0; transform: translateY(8px); transition: opacity 460ms var(--ease-out), transform 460ms var(--ease-out);
+    }
+    .scene.active .learn-pill { opacity:1; transform:none; transition-delay:1700ms; }
+    .learn-pill .dot { width:8px; height:8px; border-radius:50%; background: var(--teal); animation: blink 1.4s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{ opacity:.3 } 50%{ opacity:1 } }
+
+    /* ============ SCENE 7 — Cierre ============ */
+    .s7-stage { position:absolute; inset:72px 56px 84px; display:grid; align-content:center; gap:22px; }
+    .chain { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px; }
+    .chain .node {
+      padding:10px 14px; border-radius:14px; background: rgba(255,255,255,0.95); border:1px solid var(--line);
+      box-shadow: 0 10px 22px rgba(35,57,93,0.06); font-size:12.5px; font-weight:700; color: var(--navy); white-space:nowrap;
+      opacity:0; transform: translateY(10px) scale(0.96); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+    }
+    .chain .node.accent { background: linear-gradient(135deg, rgba(255,79,31,0.12), rgba(255,143,20,0.06)); border-color: rgba(255,79,31,0.22); }
+    .chain .node.teal { background: linear-gradient(135deg, rgba(0,174,158,0.12), rgba(59,144,170,0.06)); border-color: rgba(0,174,158,0.22); }
+    .chain .arr { color: var(--gray); font-weight:700; opacity:0; transition: opacity 360ms var(--ease-out); }
+    .scene.active .chain > *:nth-child(1){ opacity:1; transform:none; transition-delay:300ms; }
+    .scene.active .chain > *:nth-child(2){ opacity:1; transition-delay:480ms; }
+    .scene.active .chain > *:nth-child(3){ opacity:1; transform:none; transition-delay:660ms; }
+    .scene.active .chain > *:nth-child(4){ opacity:1; transition-delay:840ms; }
+    .scene.active .chain > *:nth-child(5){ opacity:1; transform:none; transition-delay:1020ms; }
+    .scene.active .chain > *:nth-child(6){ opacity:1; transition-delay:1200ms; }
+    .scene.active .chain > *:nth-child(7){ opacity:1; transform:none; transition-delay:1380ms; }
+    .scene.active .chain > *:nth-child(8){ opacity:1; transition-delay:1560ms; }
+    .scene.active .chain > *:nth-child(9){ opacity:1; transform:none; transition-delay:1740ms; }
+    .scene.active .chain > *:nth-child(10){ opacity:1; transition-delay:1920ms; }
+    .scene.active .chain > *:nth-child(11){ opacity:1; transform:none; transition-delay:2100ms; }
+
+    .lockup {
+      text-align:center; opacity:0; transform: translateY(12px);
+      transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out);
+    }
+    .scene.active .lockup { opacity:1; transform:none; transition-delay:2700ms; }
+    .lockup .big {
+      font-size:32px; font-weight:800; letter-spacing:-0.03em; line-height:1.1;
+      background: linear-gradient(120deg, var(--orange), var(--teal));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .lockup .pw { margin-top:10px; display:inline-flex; align-items:center; gap:9px; font-size:14px; color: var(--muted); font-weight:600; }
+    .lockup .pw .gm { width:24px; height:24px; border-radius:8px; background: linear-gradient(135deg, var(--orange), var(--yellow)); }
+
+    /* ============ Caption + controls ============ */
+    .caption {
+      margin-top:18px; padding:20px 24px; border-radius:18px; background: rgba(255,255,255,0.9); border:1px solid var(--line);
+      min-height:74px; display:flex; align-items:center; font-size:16px; line-height:1.5; color: var(--text); box-shadow: 0 10px 24px rgba(35,57,93,0.05);
+    }
+    .caption .text { opacity:0; transform: translateY(6px); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-out); }
+    .caption.show .text { opacity:1; transform:none; }
+
+    .controls { margin-top:16px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .btn { width:48px; height:48px; border-radius:14px; background:#fff; border:1px solid var(--line); color: var(--orange); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow: 0 10px 24px rgba(35,57,93,0.05); transition: transform 180ms, background 180ms, border-color 180ms; }
+    .btn:hover { background: rgba(255,79,31,0.05); border-color: rgba(255,79,31,0.18); }
+    .btn:active { transform: scale(0.96); }
+    .btn svg { width:18px; height:18px; fill: currentColor; }
+    .progress-wrap { flex:1; min-width:240px; height:8px; border-radius:999px; background: rgba(35,57,93,0.08); border:1px solid rgba(35,57,93,0.06); overflow:hidden; position:relative; }
+    .progress { height:100%; width:0%; background: linear-gradient(90deg, var(--orange), var(--teal)); border-radius:999px; transition: width 160ms linear; }
+    .indicator { font-size:13px; color: var(--muted); font-variant-numeric: tabular-nums; min-width:78px; text-align:right; }
+    .scene-dots { display:flex; gap:7px; }
+    .dot-btn { width:10px; height:10px; border-radius:50%; background: rgba(35,57,93,0.18); border:none; cursor:pointer; padding:0; transition: transform 180ms, background 180ms, box-shadow 180ms; }
+    .dot-btn:hover { transform: scale(1.2); }
+    .dot-btn.active { background: var(--orange); box-shadow: 0 0 0 4px rgba(255,79,31,0.14); }
+
+    @media (max-width: 980px) {
+      .scene { padding:26px 18px; }
+      .scene-title { font-size:17px; max-width:92%; bottom:24px; }
+      .caption { font-size:14px; }
+      .s2-stage, .s3-stage, .s4-stage, .s5-stage, .s6-stage, .s7-stage, .s1-stage { inset:66px 16px 84px; }
+      .s2-stage { flex-direction:column; gap:14px; overflow:auto; }
+      .chat { width:100%; max-width:360px; }
+      .s2-flow { display:none; }
+      .s3-stage { flex-direction:column; gap:12px; }
+      .engine, .ctx { width:100%; max-width:320px; }
+      .s4-stage { flex-direction:column; gap:14px; }
+      .agent-desk, .copilots { width:100%; max-width:320px; }
+      .opt-grid { grid-template-columns: repeat(2, 1fr); }
+      .lockup .big { font-size:24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-text">
+          <div class="top">Genesys</div>
+          <div class="bottom">AI en cada experiencia</div>
+        </div>
+      </div>
+      <div class="header-meta">
+        <span class="pill">7 escenas</span>
+        <span class="pill">Un cliente · IA en cada paso</span>
+      </div>
+    </header>
+
+    <main class="stage-wrap" id="stage">
+
+      <!-- ===== SCENE 1 ===== -->
+      <section class="scene" data-scene="1">
+        <div class="scene-label"><span class="num">1</span> El inicio</div>
+        <div class="s1-stage">
+          <div class="phone">
+            <div class="notch"></div>
+            <div class="clock">14:32</div>
+            <div class="date">Martes 16 de junio</div>
+            <div class="notif">
+              <div class="ic">✈️</div>
+              <div class="body">
+                <div class="ttl">AEROLÍNEA</div>
+                <div class="msg">Tu vuelo del viernes fue cancelado</div>
+                <div class="time">ahora</div>
+              </div>
+            </div>
+            <div class="wa-hint">
+              <span class="wa"><svg viewBox="0 0 24 24"><path d="M12 2a9.9 9.9 0 0 0-8.7 14.6L2 22l5.6-1.3A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3.3.8.9-3.2-.2-.4A8 8 0 1 1 12 20Z"/></svg></span>
+              El cliente abre WhatsApp
+            </div>
+          </div>
+        </div>
+        <h2 class="scene-title">Todo empieza cuando un cliente necesita ayuda.</h2>
+      </section>
+
+      <!-- ===== SCENE 2 ===== -->
+      <section class="scene" data-scene="2">
+        <div class="scene-label"><span class="num">2</span> Automation</div>
+        <div class="s2-stage">
+          <div class="chat">
+            <div class="chat-head">
+              <span class="ava"><svg viewBox="0 0 24 24"><path d="M12 2a9.9 9.9 0 0 0-8.7 14.6L2 22l5.6-1.3A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3.3.8.9-3.2-.2-.4A8 8 0 1 1 12 20Z"/></svg></span>
+              <div>
+                <div class="who">Aerolínea · WhatsApp</div>
+                <div class="sub">en línea</div>
+              </div>
+            </div>
+            <div class="chat-body">
+              <div class="bubble out">Necesito cambiar mi vuelo</div>
+              <div class="typing"><i></i><i></i><i></i></div>
+              <div class="bubble in">
+                <span class="vatag"><span class="b"></span> Virtual Agent</span>
+                Encontré 3 opciones disponibles para tu cambio. ¿Cuál prefieres?
+                <div class="options">
+                  <span class="opt">Vie 08:30</span>
+                  <span class="opt">Vie 13:15</span>
+                  <span class="opt">Vie 19:40</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="s2-flow">
+            <div class="flow-node">Cliente</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node core">Virtual Agent<span class="sub">automatiza la solicitud</span></div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node">Opciones disponibles</div>
+            <div class="resolved"><span class="tick">✓</span> Muchos casos terminan aquí</div>
+          </div>
+        </div>
+        <h2 class="scene-title">Automatización: la IA resuelve al instante lo más común.</h2>
+      </section>
+
+      <!-- ===== SCENE 3 ===== -->
+      <section class="scene" data-scene="3">
+        <div class="scene-label"><span class="num">3</span> Personalization</div>
+        <div class="s3-stage">
+          <div class="engine left">
+            <div class="t">Event Data Platform</div>
+            <h4>Todos los datos, unificados</h4>
+            <p>Cada interacción y evento se reúne en un solo perfil del cliente.</p>
+          </div>
+
+          <div class="ctx">
+            <div class="label" style="margin-bottom:12px;">Customer Context</div>
+            <h4>Experiencia personalizada</h4>
+            <div class="signals">
+              <div class="sig"><span class="d"></span> Quién es el cliente</div>
+              <div class="sig"><span class="d"></span> Su historial</div>
+              <div class="sig"><span class="d"></span> Su intención</div>
+              <div class="sig"><span class="d"></span> Su contexto actual</div>
+            </div>
+          </div>
+
+          <div class="engine right">
+            <div class="t">Intent AI</div>
+            <h4>Entiende qué quiere lograr</h4>
+            <p>Interpreta la intención real detrás de cada mensaje, no solo las palabras.</p>
+          </div>
+        </div>
+        <h2 class="scene-title">Personalización: la IA entiende quién es y qué quiere lograr.</h2>
+      </section>
+
+      <!-- ===== SCENE 4 ===== -->
+      <section class="scene" data-scene="4">
+        <div class="scene-label"><span class="num">4</span> Augmentation</div>
+        <div class="s4-stage">
+          <div class="agent-desk">
+            <div class="top">
+              <div class="av" aria-hidden="true"></div>
+              <div>
+                <h4>Agente humano</h4>
+                <p>Recibe la conversación con contexto</p>
+              </div>
+            </div>
+            <div class="checks">
+              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Resumen generado por IA</div>
+              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Intención detectada</div>
+              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Historial relevante</div>
+              <div class="check"><span class="tick"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></span> Recomendaciones</div>
+            </div>
+          </div>
+
+          <div class="copilots">
+            <div class="copilot">
+              <div class="t">Agent Copilot</div>
+              <h5>Asistencia en tiempo real</h5>
+              <p>Resúmenes, respuestas sugeridas, conocimiento y la siguiente mejor acción.</p>
+            </div>
+            <div class="copilot alt">
+              <div class="t">Genesys Cloud Copilot</div>
+              <h5>Insights y acciones</h5>
+              <p>Información conversacional y acciones con contexto y permisos.</p>
+            </div>
+          </div>
+        </div>
+        <h2 class="scene-title">Asistencia: la IA potencia al agente con todo el contexto.</h2>
+      </section>
+
+      <!-- ===== SCENE 5 ===== -->
+      <section class="scene" data-scene="5">
+        <div class="scene-label"><span class="num">5</span> Resolución</div>
+        <div class="s5-stage">
+          <div class="resolve-card">
+            <div class="seal"><svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg></div>
+            <div class="label teal" style="margin-bottom:10px;">Confirmado</div>
+            <h3>El cliente acepta su nuevo vuelo</h3>
+            <p class="muted" style="margin:0; font-size:13px;">Recibe la confirmación al instante, sin repetir información.</p>
+            <div class="flight">
+              <span>Vie 13:15 · CDMX → GDL</span>
+              <span class="arrow">✓ Reagendado</span>
+            </div>
+            <div class="csat">
+              <div class="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+              <div class="lbl">Cliente satisfecho</div>
+            </div>
+          </div>
+        </div>
+        <h2 class="scene-title">Resolución: sin repetir nada y con menos esfuerzo para todos.</h2>
+      </section>
+
+      <!-- ===== SCENE 6 ===== -->
+      <section class="scene" data-scene="6">
+        <div class="scene-label"><span class="num">6</span> Optimization</div>
+        <div class="s6-stage">
+          <div class="s6-intro">Mientras todo esto sucede… <strong>Genesys está aprendiendo.</strong></div>
+          <div class="opt-grid">
+            <div class="opt-card"><span class="scan"></span>
+              <div class="tag"><span class="b"></span> Journey Management</div>
+              <h5>Entiende y mejora journeys</h5>
+              <p>Detecta patrones y oportunidades de mejora en la experiencia.</p>
+            </div>
+            <div class="opt-card"><span class="scan"></span>
+              <div class="tag"><span class="b"></span> Predictive Routing</div>
+              <h5>Conecta con el mejor agente</h5>
+              <p>Asigna a cada cliente en tiempo real para optimizar KPIs clave.</p>
+            </div>
+            <div class="opt-card"><span class="scan"></span>
+              <div class="tag"><span class="b"></span> Forecasting</div>
+              <h5>Anticipa la demanda</h5>
+              <p>Predice volúmenes para preparar la operación con precisión.</p>
+            </div>
+            <div class="opt-card"><span class="scan"></span>
+              <div class="tag"><span class="b"></span> Scheduling</div>
+              <h5>Planea al personal</h5>
+              <p>Convierte el pronóstico en turnos y mejor cobertura.</p>
+            </div>
+          </div>
+          <div class="learn-pill"><span class="dot"></span> Analizando la operación en tiempo real</div>
+        </div>
+        <h2 class="scene-title">Optimización: Genesys aprende y mejora de forma continua.</h2>
+      </section>
+
+      <!-- ===== SCENE 7 ===== -->
+      <section class="scene" data-scene="7">
+        <div class="scene-label"><span class="num">7</span> Cierre</div>
+        <div class="s7-stage">
+          <div class="chain">
+            <span class="node">Cliente</span>
+            <span class="arr">→</span>
+            <span class="node accent">Virtual Agent</span>
+            <span class="arr">→</span>
+            <span class="node teal">Intent AI + Event Data</span>
+            <span class="arr">→</span>
+            <span class="node accent">Agent Copilot</span>
+            <span class="arr">→</span>
+            <span class="node teal">Journey Management</span>
+            <span class="arr">→</span>
+            <span class="node">Resultado</span>
+          </div>
+
+          <div class="lockup">
+            <div class="big">AI Across Every Experience</div>
+            <div class="pw"><span class="gm" aria-hidden="true"></span> Powered by Genesys</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="caption" id="caption"><div class="text" id="captionText">Todo comienza cuando un cliente necesita ayuda.</div></div>
+
+    <div class="controls">
+      <button class="btn" id="playBtn" aria-label="Reproducir o pausar">
+        <svg id="iconPlay" viewBox="0 0 24 24" style="display:none;"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="iconPause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      </button>
+      <button class="btn" id="restartBtn" aria-label="Reiniciar">
+        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.74 10h-2.08A6 6 0 1 1 12 6a5.9 5.9 0 0 1 4.22 1.78L13 11h7V4z"/></svg>
+      </button>
+      <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+      <div class="scene-dots" id="dots"></div>
+      <div class="indicator" id="indicator">0.0 / 46.0s</div>
+    </div>
+  </div>
+
+  <script>
+    const SCENES = [
+      { id: 1, duration: 5500, caption: "Todo comienza cuando un cliente necesita ayuda." },
+      { id: 2, duration: 8500, caption: "Genesys usa IA para automatizar las solicitudes comunes y ayudar al cliente al instante." },
+      { id: 3, duration: 7000, caption: "Genesys entiende quién es el cliente y qué está tratando de lograr." },
+      { id: 4, duration: 7500, caption: "Cuando interviene una persona, la IA la ayuda a actuar más rápido y con más contexto." },
+      { id: 5, duration: 5500, caption: "La experiencia se resuelve sin repetir información y con menos esfuerzo para todos." },
+      { id: 6, duration: 6500, caption: "Mientras todo sucede, Genesys aprende y optimiza la operación de forma continua." },
+      { id: 7, duration: 5500, caption: "Genesys conecta automatización, personalización, asistencia e inteligencia operativa para orquestar mejores experiencias." }
+    ];
+
+    const TOTAL = SCENES.reduce((s, x) => s + x.duration, 0);
+    const sceneEls = document.querySelectorAll('.scene');
+    const captionEl = document.getElementById('caption');
+    const captionText = document.getElementById('captionText');
+    const progressEl = document.getElementById('progress');
+    const indicatorEl = document.getElementById('indicator');
+    const playBtn = document.getElementById('playBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const iconPlay = document.getElementById('iconPlay');
+    const iconPause = document.getElementById('iconPause');
+    const dotsEl = document.getElementById('dots');
+
+    SCENES.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'dot-btn';
+      btn.setAttribute('aria-label', `Ir a escena ${i + 1}`);
+      btn.addEventListener('click', () => jumpTo(i));
+      dotsEl.appendChild(btn);
+    });
+    const dotBtns = dotsEl.querySelectorAll('.dot-btn');
+
+    let elapsed = 0, currentScene = -1, playing = false, lastTick = 0, rafId = null;
+
+    function setScene(index, opts = {}) {
+      if (index === currentScene && !opts.force) return;
+      currentScene = index;
+      sceneEls.forEach((el, i) => el.classList.toggle('active', i === index));
+      dotBtns.forEach((d, i) => d.classList.toggle('active', i === index));
+      captionEl.classList.remove('show');
+      setTimeout(() => {
+        captionText.textContent = SCENES[index].caption;
+        captionEl.classList.add('show');
+      }, 180);
+    }
+
+    function getSceneAtTime(t) {
+      let acc = 0;
+      for (let i = 0; i < SCENES.length; i++) {
+        if (t < acc + SCENES[i].duration) return i;
+        acc += SCENES[i].duration;
+      }
+      return SCENES.length - 1;
+    }
+
+    function tick(now) {
+      if (!playing) return;
+      const dt = now - lastTick;
+      lastTick = now;
+      elapsed += dt;
+      if (elapsed >= TOTAL) {
+        elapsed = TOTAL; playing = false;
+        updateUI(); setPlayIcon(false); return;
+      }
+      const idx = getSceneAtTime(elapsed);
+      if (idx !== currentScene) setScene(idx);
+      updateUI();
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function updateUI() {
+      const pct = Math.min(100, (elapsed / TOTAL) * 100);
+      progressEl.style.width = pct + '%';
+      indicatorEl.textContent = `${(elapsed / 1000).toFixed(1)} / ${(TOTAL / 1000).toFixed(1)}s`;
+    }
+
+    function play() {
+      if (elapsed >= TOTAL) { restart(true); return; }
+      playing = true; lastTick = performance.now(); setPlayIcon(true);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function pause() { playing = false; cancelAnimationFrame(rafId); setPlayIcon(false); }
+
+    function restart(autoplay = true) {
+      cancelAnimationFrame(rafId);
+      sceneEls.forEach(el => el.classList.remove('active'));
+      void document.body.offsetWidth;
+      elapsed = 0; currentScene = -1;
+      setScene(0, { force: true }); updateUI();
+      if (autoplay) { playing = true; lastTick = performance.now(); setPlayIcon(true); rafId = requestAnimationFrame(tick); }
+      else setPlayIcon(false);
+    }
+
+    function jumpTo(index) {
+      cancelAnimationFrame(rafId);
+      let acc = 0;
+      for (let i = 0; i < index; i++) acc += SCENES[i].duration;
+      elapsed = acc;
+      sceneEls.forEach(el => el.classList.remove('active'));
+      void document.body.offsetWidth;
+      currentScene = -1;
+      setScene(index, { force: true }); updateUI();
+      if (playing) { lastTick = performance.now(); rafId = requestAnimationFrame(tick); }
+    }
+
+    function setPlayIcon(isPlaying) {
+      iconPlay.style.display = isPlaying ? 'none' : 'block';
+      iconPause.style.display = isPlaying ? 'block' : 'none';
+    }
+
+    playBtn.addEventListener('click', () => { playing ? pause() : play(); });
+    restartBtn.addEventListener('click', () => restart(true));
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') { e.preventDefault(); playing ? pause() : play(); }
+      else if (e.code === 'KeyR') { restart(true); }
+    });
+
+    window.addEventListener('load', () => {
+      setScene(0, { force: true }); updateUI();
+      setTimeout(() => play(), 420);
+    });
+  </script>
+</body>
+</html>
